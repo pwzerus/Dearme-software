@@ -1,0 +1,8 @@
+<h1>Sign in</h1>
+
+<%= button_to "Continue with Google",
+              "/auth/google_oauth2",
+              method: :post,
+              form: { "data-turbo" => "false" },
+              id: "google-sign-in",
+              class: "btn" %>
