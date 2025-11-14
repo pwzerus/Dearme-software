@@ -1444,3 +1444,269 @@ Processing by LoginController#new as HTML
 Completed 200 OK in 1677ms (Views: 14.5ms | ActiveRecord: 0.0ms (0 queries, 0 cached) | GC: 0.0ms)
 
 
+Started GET "/" for 127.0.0.1 at 2025-11-13 19:57:54 -0600
+  [1m[36mActiveRecord::SchemaMigration Load (5.1ms)[0m  [1m[34mSELECT "schema_migrations"."version" FROM "schema_migrations" ORDER BY "schema_migrations"."version" ASC /*application='Project3Group4Repo'*/[0m
+Redirected to http://127.0.0.1:3000/dashboard
+Completed 301 Moved Permanently in 50ms
+
+
+Started GET "/dashboard" for 127.0.0.1 at 2025-11-13 19:57:56 -0600
+Processing by DashboardController#show as HTML
+Redirected to http://127.0.0.1:3000/login
+Filter chain halted as :require_login rendered or redirected
+Completed 302 Found in 1261ms (ActiveRecord: 0.0ms (0 queries, 0 cached) | GC: 0.0ms)
+
+
+Started GET "/login" for 127.0.0.1 at 2025-11-13 19:57:59 -0600
+Processing by LoginController#new as HTML
+  Rendering layout layouts/application.html.erb
+  Rendering login/new.html.erb within layouts/application
+  Rendered login/new.html.erb within layouts/application (Duration: 125.4ms | GC: 0.9ms)
+  Rendered layout layouts/application.html.erb (Duration: 387.3ms | GC: 2.7ms)
+Completed 200 OK in 1893ms (Views: 539.5ms | ActiveRecord: 0.0ms (0 queries, 0 cached) | GC: 3.9ms)
+
+
+Started POST "/auth/google_oauth2" for 127.0.0.1 at 2025-11-13 19:58:09 -0600
+Started GET "/auth/google_oauth2/callback?state=29560ac330c1133241e16ba43480575e58c3b279c39bad27&code=4%2F0Ab32j91c2p9YUtlIVRfJC-6qiO-oc6IvrWRFxzZ_F6VZ9SaW3uYZLFcvIH2nVnwlirJX6A&scope=email+profile+https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fuserinfo.email+openid+https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fuserinfo.profile&authuser=0&hd=tamu.edu&prompt=none" for 127.0.0.1 at 2025-11-13 19:58:13 -0600
+Processing by LoginController#omniauth_callback as HTML
+  Parameters: {"state" => "29560ac330c1133241e16ba43480575e58c3b279c39bad27", "code" => "4/0Ab32j91c2p9YUtlIVRfJC-6qiO-oc6IvrWRFxzZ_F6VZ9SaW3uYZLFcvIH2nVnwlirJX6A", "scope" => "email profile https://www.googleapis.com/auth/userinfo.email openid https://www.googleapis.com/auth/userinfo.profile", "authuser" => "0", "hd" => "tamu.edu", "prompt" => "none", "provider" => "google_oauth2"}
+  [1m[36mUser Load (1.8ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."email" = 'aditya.vmvs@tamu.edu' LIMIT 1 /*action='omniauth_callback',application='Project3Group4Repo',controller='login'*/[0m
+  ↳ app/controllers/login_controller.rb:14:in 'LoginController#omniauth_callback'
+Redirected to http://127.0.0.1:3000/dashboard
+Completed 302 Found in 1629ms (ActiveRecord: 56.6ms (1 query, 0 cached) | GC: 0.0ms)
+
+
+Started GET "/dashboard" for 127.0.0.1 at 2025-11-13 19:58:16 -0600
+Processing by DashboardController#show as HTML
+  [1m[36mUser Load (3.7ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."id" = 1 LIMIT 1 /*action='show',application='Project3Group4Repo',controller='dashboard'*/[0m
+  ↳ app/controllers/application_controller.rb:9:in 'ApplicationController#current_user'
+  Rendering layout layouts/application.html.erb
+  Rendering dashboard/show.html.erb within layouts/application
+  Rendered dashboard/show.html.erb within layouts/application (Duration: 14.7ms | GC: 0.0ms)
+  Rendered layout layouts/application.html.erb (Duration: 22.2ms | GC: 0.0ms)
+Completed 200 OK in 1259ms (Views: 32.2ms | ActiveRecord: 3.3ms (1 query, 0 cached) | GC: 0.0ms)
+
+
+Started DELETE "/logout" for 127.0.0.1 at 2025-11-13 19:58:23 -0600
+Processing by LoginController#destroy as HTML
+  Parameters: {"authenticity_token" => "[FILTERED]"}
+  [1m[36mUser Load (1.7ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."id" = 1 LIMIT 1 /*action='destroy',application='Project3Group4Repo',controller='login'*/[0m
+  ↳ app/controllers/application_controller.rb:9:in 'ApplicationController#current_user'
+Redirected to http://127.0.0.1:3000/
+Completed 302 Found in 1228ms (ActiveRecord: 1.6ms (1 query, 0 cached) | GC: 0.0ms)
+
+
+Started GET "/" for 127.0.0.1 at 2025-11-13 19:58:25 -0600
+Redirected to http://127.0.0.1:3000/dashboard
+Completed 301 Moved Permanently in 26ms
+
+
+Started GET "/dashboard" for 127.0.0.1 at 2025-11-13 19:58:27 -0600
+Processing by DashboardController#show as HTML
+Redirected to http://127.0.0.1:3000/login
+Filter chain halted as :require_login rendered or redirected
+Completed 302 Found in 1268ms (ActiveRecord: 0.0ms (0 queries, 0 cached) | GC: 0.0ms)
+
+
+Started GET "/login" for 127.0.0.1 at 2025-11-13 19:58:29 -0600
+Processing by LoginController#new as HTML
+  Rendering layout layouts/application.html.erb
+  Rendering login/new.html.erb within layouts/application
+  Rendered login/new.html.erb within layouts/application (Duration: 14.1ms | GC: 0.0ms)
+  Rendered layout layouts/application.html.erb (Duration: 21.3ms | GC: 0.0ms)
+Completed 200 OK in 1053ms (Views: 23.7ms | ActiveRecord: 0.0ms (0 queries, 0 cached) | GC: 0.0ms)
+
+
+Started POST "/auth/google_oauth2" for 127.0.0.1 at 2025-11-13 20:59:25 -0600
+Started GET "/auth/google_oauth2/callback?state=5c6b74cccc5c1bd15306ec6bc45a7228147b3f5db0b23bee&code=4%2F0Ab32j91HjVBKIIWQifuhJQ8S9YbtKxGFvDRB6PRQ5wcC0FVdLArY4WRF0LgEmvEXwXANiw&scope=email+profile+https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fuserinfo.email+openid+https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fuserinfo.profile&authuser=0&hd=tamu.edu&prompt=none" for 127.0.0.1 at 2025-11-13 20:59:36 -0600
+Processing by LoginController#omniauth_callback as HTML
+  Parameters: {"state" => "5c6b74cccc5c1bd15306ec6bc45a7228147b3f5db0b23bee", "code" => "4/0Ab32j91HjVBKIIWQifuhJQ8S9YbtKxGFvDRB6PRQ5wcC0FVdLArY4WRF0LgEmvEXwXANiw", "scope" => "email profile https://www.googleapis.com/auth/userinfo.email openid https://www.googleapis.com/auth/userinfo.profile", "authuser" => "0", "hd" => "tamu.edu", "prompt" => "none", "provider" => "google_oauth2"}
+  [1m[36mUser Load (123.2ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."email" = 'aditya.vmvs@tamu.edu' LIMIT 1 /*action='omniauth_callback',application='Project3Group4Repo',controller='login'*/[0m
+  ↳ app/controllers/login_controller.rb:14:in 'LoginController#omniauth_callback'
+Redirected to http://127.0.0.1:3000/dashboard
+Completed 302 Found in 1333ms (ActiveRecord: 122.7ms (1 query, 0 cached) | GC: 0.0ms)
+
+
+Started GET "/dashboard" for 127.0.0.1 at 2025-11-13 20:59:39 -0600
+Processing by DashboardController#show as HTML
+  [1m[36mUser Load (1.8ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."id" = 1 LIMIT 1 /*action='show',application='Project3Group4Repo',controller='dashboard'*/[0m
+  ↳ app/controllers/application_controller.rb:9:in 'ApplicationController#current_user'
+  Rendering layout layouts/application.html.erb
+  Rendering dashboard/show.html.erb within layouts/application
+  Rendered dashboard/show.html.erb within layouts/application (Duration: 7.1ms | GC: 0.0ms)
+  Rendered layout layouts/application.html.erb (Duration: 18.5ms | GC: 0.0ms)
+Completed 200 OK in 1158ms (Views: 27.5ms | ActiveRecord: 1.8ms (1 query, 0 cached) | GC: 0.0ms)
+
+
+Started DELETE "/logout" for 127.0.0.1 at 2025-11-13 20:59:50 -0600
+Processing by LoginController#destroy as HTML
+  Parameters: {"authenticity_token" => "[FILTERED]"}
+  [1m[36mUser Load (1.2ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."id" = 1 LIMIT 1 /*action='destroy',application='Project3Group4Repo',controller='login'*/[0m
+  ↳ app/controllers/application_controller.rb:9:in 'ApplicationController#current_user'
+Redirected to http://127.0.0.1:3000/
+Completed 302 Found in 981ms (ActiveRecord: 1.2ms (1 query, 0 cached) | GC: 0.0ms)
+
+
+Started GET "/" for 127.0.0.1 at 2025-11-13 20:59:52 -0600
+Redirected to http://127.0.0.1:3000/dashboard
+Completed 301 Moved Permanently in 0ms
+
+
+Started GET "/dashboard" for 127.0.0.1 at 2025-11-13 20:59:53 -0600
+Processing by DashboardController#show as HTML
+Redirected to http://127.0.0.1:3000/login
+Filter chain halted as :require_login rendered or redirected
+Completed 302 Found in 1037ms (ActiveRecord: 0.0ms (0 queries, 0 cached) | GC: 0.0ms)
+
+
+Started GET "/login" for 127.0.0.1 at 2025-11-13 20:59:55 -0600
+Processing by LoginController#new as HTML
+  Rendering layout layouts/application.html.erb
+  Rendering login/new.html.erb within layouts/application
+  Rendered login/new.html.erb within layouts/application (Duration: 3.3ms | GC: 0.0ms)
+  Rendered layout layouts/application.html.erb (Duration: 11.4ms | GC: 0.0ms)
+Completed 200 OK in 960ms (Views: 21.4ms | ActiveRecord: 0.0ms (0 queries, 0 cached) | GC: 0.0ms)
+
+
+Started GET "/" for 127.0.0.1 at 2025-11-14 13:23:59 -0600
+  [1m[36mActiveRecord::SchemaMigration Load (4.5ms)[0m  [1m[34mSELECT "schema_migrations"."version" FROM "schema_migrations" ORDER BY "schema_migrations"."version" ASC /*application='Project3Group4Repo'*/[0m
+Redirected to http://127.0.0.1:3000/dashboard
+Completed 301 Moved Permanently in 40ms
+
+
+Started GET "/dashboard" for 127.0.0.1 at 2025-11-14 13:24:01 -0600
+Processing by DashboardController#show as HTML
+Redirected to http://127.0.0.1:3000/login
+Filter chain halted as :require_login rendered or redirected
+Completed 302 Found in 1111ms (ActiveRecord: 0.0ms (0 queries, 0 cached) | GC: 0.0ms)
+
+
+Started GET "/login" for 127.0.0.1 at 2025-11-14 13:24:04 -0600
+Processing by LoginController#new as HTML
+  Rendering layout layouts/application.html.erb
+  Rendering login/new.html.erb within layouts/application
+  Rendered login/new.html.erb within layouts/application (Duration: 9.6ms | GC: 0.0ms)
+  Rendered layout layouts/application.html.erb (Duration: 303.7ms | GC: 0.0ms)
+Completed 200 OK in 1646ms (Views: 469.9ms | ActiveRecord: 0.0ms (0 queries, 0 cached) | GC: 0.0ms)
+
+
+Started POST "/auth/google_oauth2" for 127.0.0.1 at 2025-11-14 13:24:10 -0600
+Started GET "/auth/google_oauth2/callback?state=9f519fad5cbba5ba3e3fbbf0292d930d39c493b39d54ae0b&code=4%2F0Ab32j93bufHcvXaSRg_di77K1_izRIBfLWmbt3diEV4tRxMxKWyWiByc7NyUf5NJxAJfJw&scope=email+profile+https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fuserinfo.profile+https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fuserinfo.email+openid&authuser=0&hd=tamu.edu&prompt=none" for 127.0.0.1 at 2025-11-14 13:24:15 -0600
+Processing by LoginController#omniauth_callback as HTML
+  Parameters: {"state" => "9f519fad5cbba5ba3e3fbbf0292d930d39c493b39d54ae0b", "code" => "4/0Ab32j93bufHcvXaSRg_di77K1_izRIBfLWmbt3diEV4tRxMxKWyWiByc7NyUf5NJxAJfJw", "scope" => "email profile https://www.googleapis.com/auth/userinfo.profile https://www.googleapis.com/auth/userinfo.email openid", "authuser" => "0", "hd" => "tamu.edu", "prompt" => "none", "provider" => "google_oauth2"}
+  [1m[36mUser Load (2.0ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."email" = 'aditya.vmvs@tamu.edu' LIMIT 1 /*action='omniauth_callback',application='Project3Group4Repo',controller='login'*/[0m
+  ↳ app/controllers/login_controller.rb:14:in 'LoginController#omniauth_callback'
+Redirected to http://127.0.0.1:3000/dashboard
+Completed 302 Found in 1595ms (ActiveRecord: 52.3ms (1 query, 0 cached) | GC: 0.0ms)
+
+
+Started GET "/dashboard" for 127.0.0.1 at 2025-11-14 13:24:18 -0600
+Processing by DashboardController#show as HTML
+  [1m[36mUser Load (4.2ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."id" = 1 LIMIT 1 /*action='show',application='Project3Group4Repo',controller='dashboard'*/[0m
+  ↳ app/controllers/application_controller.rb:9:in 'ApplicationController#current_user'
+  Rendering layout layouts/application.html.erb
+  Rendering dashboard/show.html.erb within layouts/application
+  Rendered dashboard/show.html.erb within layouts/application (Duration: 13.9ms | GC: 0.0ms)
+  Rendered layout layouts/application.html.erb (Duration: 21.5ms | GC: 0.0ms)
+Completed 200 OK in 1097ms (Views: 30.0ms | ActiveRecord: 4.2ms (1 query, 0 cached) | GC: 0.0ms)
+
+
+Started DELETE "/logout" for 127.0.0.1 at 2025-11-14 13:24:23 -0600
+Processing by LoginController#destroy as HTML
+  Parameters: {"authenticity_token" => "[FILTERED]"}
+  [1m[36mUser Load (1.2ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."id" = 1 LIMIT 1 /*action='destroy',application='Project3Group4Repo',controller='login'*/[0m
+  ↳ app/controllers/application_controller.rb:9:in 'ApplicationController#current_user'
+Redirected to http://127.0.0.1:3000/
+Completed 302 Found in 934ms (ActiveRecord: 1.2ms (1 query, 0 cached) | GC: 0.0ms)
+
+
+Started GET "/" for 127.0.0.1 at 2025-11-14 13:24:25 -0600
+Redirected to http://127.0.0.1:3000/dashboard
+Completed 301 Moved Permanently in 17ms
+
+
+Started GET "/dashboard" for 127.0.0.1 at 2025-11-14 13:24:27 -0600
+Processing by DashboardController#show as HTML
+Redirected to http://127.0.0.1:3000/login
+Filter chain halted as :require_login rendered or redirected
+Completed 302 Found in 936ms (ActiveRecord: 0.0ms (0 queries, 0 cached) | GC: 0.0ms)
+
+
+Started GET "/login" for 127.0.0.1 at 2025-11-14 13:24:29 -0600
+Processing by LoginController#new as HTML
+  Rendering layout layouts/application.html.erb
+  Rendering login/new.html.erb within layouts/application
+  Rendered login/new.html.erb within layouts/application (Duration: 12.7ms | GC: 0.0ms)
+  Rendered layout layouts/application.html.erb (Duration: 21.3ms | GC: 0.0ms)
+Completed 200 OK in 881ms (Views: 23.5ms | ActiveRecord: 0.0ms (0 queries, 0 cached) | GC: 0.0ms)
+
+
+Started GET "/login" for 127.0.0.1 at 2025-11-14 13:24:49 -0600
+Processing by LoginController#new as HTML
+  Rendering layout layouts/application.html.erb
+  Rendering login/new.html.erb within layouts/application
+  Rendered login/new.html.erb within layouts/application (Duration: 2.0ms | GC: 0.0ms)
+  Rendered layout layouts/application.html.erb (Duration: 5.6ms | GC: 0.0ms)
+Completed 200 OK in 1031ms (Views: 7.8ms | ActiveRecord: 0.0ms (0 queries, 0 cached) | GC: 0.0ms)
+
+
+Started GET "/login" for 127.0.0.1 at 2025-11-14 13:24:55 -0600
+Processing by LoginController#new as HTML
+  Rendering layout layouts/application.html.erb
+  Rendering login/new.html.erb within layouts/application
+  Rendered login/new.html.erb within layouts/application (Duration: 4.4ms | GC: 0.0ms)
+  Rendered layout layouts/application.html.erb (Duration: 48.4ms | GC: 0.0ms)
+Completed 200 OK in 1087ms (Views: 55.5ms | ActiveRecord: 0.0ms (0 queries, 0 cached) | GC: 0.0ms)
+
+
+Started POST "/auth/google_oauth2" for 127.0.0.1 at 2025-11-14 13:24:58 -0600
+Started GET "/auth/google_oauth2/callback?state=b2168cc92564fe3bd39d0dbe39e148f561a35f67f9dcafeb&code=4%2F0Ab32j938mZx7oObNq9Q6rurK86Po2Si5t3kTlXQCcdPVYdMbH0XzkZKylsND65fYKezkUw&scope=email+profile+openid+https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fuserinfo.profile+https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fuserinfo.email&authuser=0&hd=tamu.edu&prompt=none" for 127.0.0.1 at 2025-11-14 13:25:02 -0600
+Processing by LoginController#omniauth_callback as HTML
+  Parameters: {"state" => "b2168cc92564fe3bd39d0dbe39e148f561a35f67f9dcafeb", "code" => "4/0Ab32j938mZx7oObNq9Q6rurK86Po2Si5t3kTlXQCcdPVYdMbH0XzkZKylsND65fYKezkUw", "scope" => "email profile openid https://www.googleapis.com/auth/userinfo.profile https://www.googleapis.com/auth/userinfo.email", "authuser" => "0", "hd" => "tamu.edu", "prompt" => "none", "provider" => "google_oauth2"}
+  [1m[36mUser Load (2.7ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."email" = 'aditya.vmvs@tamu.edu' LIMIT 1 /*action='omniauth_callback',application='Project3Group4Repo',controller='login'*/[0m
+  ↳ app/controllers/login_controller.rb:14:in 'LoginController#omniauth_callback'
+Redirected to http://127.0.0.1:3000/dashboard
+Completed 302 Found in 926ms (ActiveRecord: 2.7ms (1 query, 0 cached) | GC: 0.0ms)
+
+
+Started GET "/dashboard" for 127.0.0.1 at 2025-11-14 13:25:05 -0600
+Processing by DashboardController#show as HTML
+  [1m[36mUser Load (2.3ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."id" = 1 LIMIT 1 /*action='show',application='Project3Group4Repo',controller='dashboard'*/[0m
+  ↳ app/controllers/application_controller.rb:9:in 'ApplicationController#current_user'
+  Rendering layout layouts/application.html.erb
+  Rendering dashboard/show.html.erb within layouts/application
+  Rendered dashboard/show.html.erb within layouts/application (Duration: 2.5ms | GC: 0.0ms)
+  Rendered layout layouts/application.html.erb (Duration: 5.9ms | GC: 0.0ms)
+Completed 200 OK in 909ms (Views: 7.2ms | ActiveRecord: 2.3ms (1 query, 0 cached) | GC: 0.0ms)
+
+
+Started DELETE "/logout" for 127.0.0.1 at 2025-11-14 13:25:10 -0600
+Processing by LoginController#destroy as HTML
+  Parameters: {"authenticity_token" => "[FILTERED]"}
+  [1m[36mUser Load (1.4ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."id" = 1 LIMIT 1 /*action='destroy',application='Project3Group4Repo',controller='login'*/[0m
+  ↳ app/controllers/application_controller.rb:9:in 'ApplicationController#current_user'
+Redirected to http://127.0.0.1:3000/
+Completed 302 Found in 838ms (ActiveRecord: 1.4ms (1 query, 0 cached) | GC: 0.0ms)
+
+
+Started GET "/" for 127.0.0.1 at 2025-11-14 13:25:12 -0600
+Redirected to http://127.0.0.1:3000/dashboard
+Completed 301 Moved Permanently in 1ms
+
+
+Started GET "/dashboard" for 127.0.0.1 at 2025-11-14 13:25:13 -0600
+Processing by DashboardController#show as HTML
+Redirected to http://127.0.0.1:3000/login
+Filter chain halted as :require_login rendered or redirected
+Completed 302 Found in 896ms (ActiveRecord: 0.0ms (0 queries, 0 cached) | GC: 0.0ms)
+
+
+Started GET "/login" for 127.0.0.1 at 2025-11-14 13:25:14 -0600
+Processing by LoginController#new as HTML
+  Rendering layout layouts/application.html.erb
+  Rendering login/new.html.erb within layouts/application
+  Rendered login/new.html.erb within layouts/application (Duration: 2.8ms | GC: 0.0ms)
+  Rendered layout layouts/application.html.erb (Duration: 7.5ms | GC: 0.0ms)
+Completed 200 OK in 880ms (Views: 9.9ms | ActiveRecord: 0.0ms (0 queries, 0 cached) | GC: 0.0ms)
+
+

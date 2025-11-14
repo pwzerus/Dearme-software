@@ -53,49 +53,116 @@ jobs:
       - name: Lint code for consistent style
         run: bin/rubocop -f github
 
-  test:
+  test_rspec:
     runs-on: ubuntu-latest
 
     services:
-      postgres:
-        image: postgres
+      my_postgres_service:
+        image: postgres:15
         env:
-          POSTGRES_USER: postgres
-          POSTGRES_PASSWORD: postgres
-        ports:
-          - 5432:5432
-        options: --health-cmd="pg_isready" --health-interval=10s --health-timeout=5s --health-retries=3
+          POSTGRES_PASSWORD: howdy
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 3
 
-      # redis:
-      #   image: redis
-      #   ports:
-      #     - 6379:6379
-      #   options: --health-cmd "redis-cli ping" --health-interval 10s --health-timeout 5s --health-retries 5
+    env:
+      PGDATABASE: postgres
+      PGHOST: my_postgres_service
+      PGUSER: postgres
+      PGPASSWORD: howdy
+      RAILS_ENV: test
+      WITH_COVERAGE: true
+      DISABLE_SPRING: 1
 
     steps:
-      - name: Install packages
-        run: sudo apt-get update && sudo apt-get install --no-install-recommends -y build-essential git libpq-dev libyaml-dev pkg-config google-chrome-stable
-
+      # Clone rails app repo in runner
       - name: Checkout code
         uses: actions/checkout@v4
 
+      # Install ruby
       - name: Set up Ruby
         uses: ruby/setup-ruby@v1
         with:
           ruby-version: .ruby-version
           bundler-cache: true
 
-      - name: Run tests
-        env:
-          RAILS_ENV: test
-          DATABASE_URL: postgres://postgres:postgres@localhost:5432
-          # REDIS_URL: redis://localhost:6379/0
-        run: bin/rails db:test:prepare test test:system
+      - name: Install bundler and postgresql dependencies
+        run: |
+          sudo apt install -yqq libpq-dev
+          gem install bundler
 
-      - name: Keep screenshots from failed system tests
+      - name: Install Gems
+        run: bundle install
+
+      - name: Setup database
+        run: bundle exec rails db:prepare
+
+      - name: Build and test with rspec
+        run: bundle exec rspec spec
+
+      # Upload code coverage files as artifacts
+      - name: Create Coverage Artifact
+        if: always() # Run even if the test fail
         uses: actions/upload-artifact@v4
-        if: failure()
         with:
-          name: screenshots
-          path: ${{ github.workspace }}/tmp/screenshots
-          if-no-files-found: ignore
+          name: rspec-code-coverage
+          path: coverage/
+
+  test_cucumber:
+    runs-on: ubuntu-latest
+
+    services:
+      my_postgres_service:
+        image: postgres:15
+        env:
+          POSTGRES_PASSWORD: howdy
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 3
+
+    env:
+      PGDATABASE: postgres
+      PGHOST: my_postgres_service
+      PGUSER: postgres
+      PGPASSWORD: howdy
+      RAILS_ENV: test
+      WITH_COVERAGE: true
+      DISABLE_SPRING: 1
+
+    steps:
+      # Clone rails app repo in runner
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      # Install ruby
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: .ruby-version
+          bundler-cache: true
+
+      - name: Install bundler and postgresql dependencies
+        run: |
+          sudo apt install -yqq libpq-dev
+          gem install bundler
+
+      - name: Install Gems
+        run: bundle install
+
+      - name: Setup database
+        run: bundle exec rails db:prepare
+
+      - name: Run cucumber tests
+        run: bundle exec cucumber
+
+      # Upload code coverage files as artifacts
+      - name: Create Coverage Artifact
+        if: always() # Run even if the test fail
+        uses: actions/upload-artifact@v4
+        with:
+          name: cucumber-code-coverage
+          path: coverage/
