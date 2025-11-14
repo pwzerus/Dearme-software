@@ -1,11 +1,10 @@
-require 'rails_helper'
+require "rails_helper"
 
 RSpec.describe "Dashboards", type: :request do
-  describe "GET /show" do
-    it "returns http success" do
-      get "/dashboard/show"
-      expect(response).to have_http_status(:success)
+  describe "GET /dashboard" do
+    it "redirects to login when not authenticated" do
+      get dashboard_path
+      expect(response).to redirect_to(login_path)
     end
   end
-
 end
