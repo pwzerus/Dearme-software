@@ -1,0 +1,8 @@
+# Environment files (keep secrets out of git)
+.env
+
+/tmp/*
+!/tmp/.keep
+
+/log/*
+!/log/.keep
