@@ -58,31 +58,31 @@ jobs:
     runs-on: ubuntu-latest
 
     services:
-      my_postgres_service:
+      postgres:
         image: postgres:15
         env:
+          POSTGRES_USER: postgres
           POSTGRES_PASSWORD: howdy
+          POSTGRES_DB: project3_group4_test
         options: >-
-          --health-cmd pg_isready
+          --health-cmd pg_isready -U postgres
           --health-interval 10s
           --health-timeout 5s
-          --health-retries 3
+          --health-retries 5
 
     env:
-      PGDATABASE: postgres
-      PGHOST: my_postgres_service
+      PGHOST: postgres
       PGUSER: postgres
       PGPASSWORD: howdy
+      PGDATABASE: project3_group4_test
       RAILS_ENV: test
       WITH_COVERAGE: true
       DISABLE_SPRING: 1
 
     steps:
-      # Clone rails app repo in runner
       - name: Checkout code
         uses: actions/checkout@v4
 
-      # Install ruby
       - name: Set up Ruby
         uses: ruby/setup-ruby@v1
         with:
@@ -103,9 +103,8 @@ jobs:
       - name: Build and test with rspec
         run: bundle exec rspec spec
 
-      # Upload code coverage files as artifacts
       - name: Create Coverage Artifact
-        if: always() # Run even if the test fail
+        if: always()
         uses: actions/upload-artifact@v4
         with:
           name: rspec-code-coverage
@@ -115,31 +114,31 @@ jobs:
     runs-on: ubuntu-latest
 
     services:
-      my_postgres_service:
+      postgres:
         image: postgres:15
         env:
+          POSTGRES_USER: postgres
           POSTGRES_PASSWORD: howdy
+          POSTGRES_DB: project3_group4_test
         options: >-
-          --health-cmd pg_isready
+          --health-cmd pg_isready -U postgres
           --health-interval 10s
           --health-timeout 5s
-          --health-retries 3
+          --health-retries 5
 
     env:
-      PGDATABASE: postgres
-      PGHOST: my_postgres_service
+      PGHOST: postgres
       PGUSER: postgres
       PGPASSWORD: howdy
+      PGDATABASE: project3_group4_test
       RAILS_ENV: test
       WITH_COVERAGE: true
       DISABLE_SPRING: 1
 
     steps:
-      # Clone rails app repo in runner
       - name: Checkout code
         uses: actions/checkout@v4
 
-      # Install ruby
       - name: Set up Ruby
         uses: ruby/setup-ruby@v1
         with:
@@ -160,9 +159,8 @@ jobs:
       - name: Run cucumber tests
         run: bundle exec cucumber
 
-      # Upload code coverage files as artifacts
       - name: Create Coverage Artifact
-        if: always() # Run even if the test fail
+        if: always()
         uses: actions/upload-artifact@v4
         with:
           name: cucumber-code-coverage
