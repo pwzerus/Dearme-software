@@ -1,7 +1,7 @@
 # app/controllers/login_controller.rb
 class LoginController < ApplicationController
   # Don't need login to reach the login page or callback
-  skip_before_action :require_login, only: [:new, :omniauth_callback, :failure], raise: false
+  skip_before_action :require_login, only: [ :new, :omniauth_callback, :failure ], raise: false
 
   # GET /login
   def new

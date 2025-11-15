@@ -50,9 +50,9 @@ group :development, :test do
 
   # Static analysis for security vulnerabilities [https://brakemanscanner.org/]
   gem "brakeman", require: false
-  gem "rspec-rails" 
+  gem "rspec-rails"
   gem "rubocop-rails-omakase", require: false
-  gem "rubocop-rspec", require: false  
+  gem "rubocop-rspec", require: false
 end
 
 group :development do
@@ -67,5 +67,4 @@ group :test do
   gem "database_cleaner-active_record"
   gem "selenium-webdriver"   # only if you’ll run JS/Capybara @javascript tests
   gem "webdrivers", require: false
-
 end

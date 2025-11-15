@@ -36,7 +36,8 @@ jobs:
           bundler-cache: true
 
       - name: Scan for security vulnerabilities in JavaScript dependencies
-        run: bundle exec importmap audit
+        # Use the Rails-provided script instead of a gem executable
+        run: ruby bin/importmap audit
 
   lint:
     runs-on: ubuntu-latest
