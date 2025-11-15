@@ -1,0 +1,3 @@
+# Environment files (keep secrets out of git)
+.env
+log/development.log
