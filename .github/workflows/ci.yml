@@ -41,6 +41,7 @@ jobs:
 
   lint:
     runs-on: ubuntu-latest
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -64,6 +65,8 @@ jobs:
           POSTGRES_USER: postgres
           POSTGRES_PASSWORD: howdy
           POSTGRES_DB: project3_group4_test
+        ports:
+          - 5432:5432
         options: >-
           --health-cmd pg_isready
           --health-interval 10s
@@ -71,7 +74,7 @@ jobs:
           --health-retries 5
 
     env:
-      PGHOST: postgres
+      PGHOST: localhost
       PGUSER: postgres
       PGPASSWORD: howdy
       PGDATABASE: project3_group4_test
@@ -120,6 +123,8 @@ jobs:
           POSTGRES_USER: postgres
           POSTGRES_PASSWORD: howdy
           POSTGRES_DB: project3_group4_test
+        ports:
+          - 5432:5432
         options: >-
           --health-cmd pg_isready
           --health-interval 10s
@@ -127,7 +132,7 @@ jobs:
           --health-retries 5
 
     env:
-      PGHOST: postgres
+      PGHOST: localhost
       PGUSER: postgres
       PGPASSWORD: howdy
       PGDATABASE: project3_group4_test
