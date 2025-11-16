@@ -7,10 +7,32 @@ RSpec.describe Post, type: :model do
                    last_name: "Snake")
   }
 
+  let(:test_location) {
+      Location.create!(
+              address_line_1: "Mata Mandir",
+              city: "Bhopal",
+              state: "Madhya Pradesh",
+              zip_code: "462003",
+              country: "IN"
+              )
+  }
+
   describe "validations" do
+    let(:valid_post_attributes) {
+      {
+        creator: test_user,
+        location: test_location
+      }
+    }
+
     it "should not be able to exist without a creator user" do
-      p = Post.new(creator: nil)
+      p = Post.new(valid_post_attributes.except(:creator))
       expect(p).to be_invalid
+    end
+
+    it "should be able to exist without a location" do
+      p = Post.new(valid_post_attributes.except(:location))
+      expect(p).to be_valid
     end
   end
 

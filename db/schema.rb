@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_11_16_181737) do
+ActiveRecord::Schema[8.0].define(version: 2025_11_16_195017) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -42,6 +42,16 @@ ActiveRecord::Schema[8.0].define(version: 2025_11_16_181737) do
     t.index ["blob_id", "variation_digest"], name: "index_active_storage_variant_records_uniqueness", unique: true
   end
 
+  create_table "locations", force: :cascade do |t|
+    t.string "address_line_1"
+    t.string "city"
+    t.string "state"
+    t.string "zip_code"
+    t.string "country"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
   create_table "media_files", force: :cascade do |t|
     t.string "parent_type", null: false
     t.bigint "parent_id", null: false
@@ -66,7 +76,9 @@ ActiveRecord::Schema[8.0].define(version: 2025_11_16_181737) do
     t.bigint "creator_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.bigint "location_id"
     t.index ["creator_id"], name: "index_posts_on_creator_id"
+    t.index ["location_id"], name: "index_posts_on_location_id"
   end
 
   create_table "tags", force: :cascade do |t|
@@ -90,6 +102,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_11_16_181737) do
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
   add_foreign_key "post_tags", "posts"
   add_foreign_key "post_tags", "tags"
+  add_foreign_key "posts", "locations"
   add_foreign_key "posts", "users", column: "creator_id"
   add_foreign_key "tags", "users", column: "creator_id"
 end
