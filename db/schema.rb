@@ -10,9 +10,18 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_11_16_165531) do
+ActiveRecord::Schema[8.0].define(version: 2025_11_16_171844) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
+
+  create_table "post_tags", force: :cascade do |t|
+    t.bigint "post_id", null: false
+    t.bigint "tag_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["post_id"], name: "index_post_tags_on_post_id"
+    t.index ["tag_id"], name: "index_post_tags_on_tag_id"
+  end
 
   create_table "posts", force: :cascade do |t|
     t.string "title"
@@ -39,6 +48,8 @@ ActiveRecord::Schema[8.0].define(version: 2025_11_16_165531) do
     t.datetime "updated_at", null: false
   end
 
+  add_foreign_key "post_tags", "posts"
+  add_foreign_key "post_tags", "tags"
   add_foreign_key "posts", "users", column: "creator_id"
   add_foreign_key "tags", "users", column: "creator_id"
 end
