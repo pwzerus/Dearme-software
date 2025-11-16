@@ -10,9 +10,17 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_11_16_155027) do
+ActiveRecord::Schema[8.0].define(version: 2025_11_16_165531) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
+
+  create_table "posts", force: :cascade do |t|
+    t.string "title"
+    t.bigint "creator_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["creator_id"], name: "index_posts_on_creator_id"
+  end
 
   create_table "tags", force: :cascade do |t|
     t.string "title", null: false
@@ -31,5 +39,6 @@ ActiveRecord::Schema[8.0].define(version: 2025_11_16_155027) do
     t.datetime "updated_at", null: false
   end
 
+  add_foreign_key "posts", "users", column: "creator_id"
   add_foreign_key "tags", "users", column: "creator_id"
 end
