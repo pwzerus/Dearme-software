@@ -15,7 +15,7 @@ RSpec.describe PostTag, type: :model do
     p.tags << t1
     p.tags << t2
 
-    expect(p.tags).to match_array([t1, t2])
+    expect(p.tags).to match_array([ t1, t2 ])
   end
 
    it "should be able to associate a tag with multiple posts" do
@@ -26,7 +26,7 @@ RSpec.describe PostTag, type: :model do
     t.posts << p1
     t.posts << p2
 
-    expect(t.posts).to match_array([p1, p2])
+    expect(t.posts).to match_array([ p1, p2 ])
   end
 
   it "shouldn't associate tag created by one with post created by another" do

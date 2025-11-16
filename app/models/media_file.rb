@@ -14,7 +14,7 @@ class MediaFile < ApplicationRecord
 
   validates :file_type,
             presence: true,
-            inclusion: { in: [ Type::IMAGE, Type::VIDEO, Type::AUDIO ]}
+            inclusion: { in: [ Type::IMAGE, Type::VIDEO, Type::AUDIO ] }
 
   # Convenience methods
   def belongs_to_user?

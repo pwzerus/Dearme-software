@@ -44,7 +44,7 @@ RSpec.describe Tag, type: :model do
     t1 = Tag.create!(creator: test_user, title: "title 1")
     t2 = Tag.create!(creator: test_user, title: "title 2")
 
-    expect(test_user.tags).to match_array([t1, t2])
+    expect(test_user.tags).to match_array([ t1, t2 ])
   end
 
   it "should belong to the creator user" do
@@ -57,7 +57,7 @@ RSpec.describe Tag, type: :model do
 
     t = Tag.create!(creator: test_user, title: test_tag_title)
 
-    expect{ test_user.destroy! }.to change { Tag.count }.by(-1)
+    expect { test_user.destroy! }.to change { Tag.count }.by(-1)
     expect(Tag.find_by(title: test_tag_title)).to be_nil
   end
 end

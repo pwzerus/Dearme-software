@@ -44,7 +44,7 @@ RSpec.describe Post, type: :model do
   it "should allow creator to have multiple posts" do
     p1 = Post.create!(creator: test_user, title: "Post 1")
     p2 = Post.create!(creator: test_user, title: "Post 2")
-    expect(test_user.posts).to match_array([p1, p2])
+    expect(test_user.posts).to match_array([ p1, p2 ])
   end
 
   it "should get destroyed on destruction of creator user" do
@@ -52,7 +52,7 @@ RSpec.describe Post, type: :model do
 
     t = Post.create!(creator: test_user, title: test_post_title)
 
-    expect{ test_user.destroy! }.to change { Post.count }.by(-1)
+    expect { test_user.destroy! }.to change { Post.count }.by(-1)
     expect(Post.find_by(title: test_post_title)).to be_nil
   end
 end

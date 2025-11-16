@@ -23,7 +23,7 @@ RSpec.describe Location, type: :model do
     p1 = Post.create!(creator: test_user, location: test_location)
     p2 = Post.create!(creator: test_user, location: test_location)
 
-    expect(test_location.posts).to match_array([p1, p2])
+    expect(test_location.posts).to match_array([ p1, p2 ])
     expect(p1.location).to eq(test_location)
     expect(p2.location).to eq(test_location)
   end

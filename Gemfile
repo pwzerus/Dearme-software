@@ -67,5 +67,5 @@ group :test do
   gem "selenium-webdriver"   # only if you’ll run JS/Capybara @javascript tests
   gem "webdrivers", require: false
 
-  gem 'simplecov', require: false
+  gem "simplecov", require: false
 end
