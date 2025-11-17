@@ -55,4 +55,9 @@ RSpec.describe Post, type: :model do
     expect { test_user.destroy! }.to change { Post.count }.by(-1)
     expect(Post.find_by(title: test_post_title)).to be_nil
   end
+
+  it "should use be an archived post by default" do
+    t = Post.create!(creator: test_user)
+    expect(t.archived).to be true
+  end
 end
