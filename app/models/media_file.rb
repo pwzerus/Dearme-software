@@ -18,10 +18,10 @@ class MediaFile < ApplicationRecord
 
   # Convenience methods
   def belongs_to_user?
-    owner_type == "User"
+    parent_type == "User"
   end
 
   def belongs_to_post?
-    owner_type == "Post"
+    parent_type == "Post"
   end
 end
