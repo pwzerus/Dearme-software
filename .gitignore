@@ -6,3 +6,6 @@
 
 /log/*
 !/log/.keep
+
+# We don't want coverage files in the repository
+/coverage/**
