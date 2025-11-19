@@ -8,3 +8,16 @@ Feature: Create a new tag
     And I do not already have a tag named "Travel"
     When I create a new tag named "Travel"
     Then I should see "Travel" in my list of tags
+
+  Scenario: Fail to create a tag with a blank name
+    Given I am logged in
+    When I attempt to create a new tag with no name
+    Then I should see an error that the tag name cannot be blank
+    And the tag should not be created
+
+  Scenario: Fail to create a tag with a duplicate name
+    Given I am logged in
+    And I already have a tag named "Travel"
+    When I create a new tag named "Travel"
+    Then I should see an error that the tag name has already been taken
+    And the tag should not be duplicated

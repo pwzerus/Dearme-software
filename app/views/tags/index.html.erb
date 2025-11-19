@@ -1,4 +1,4 @@
-<h1>My Tags</h1>
+<h1>Tags</h1>
 
 <% if flash[:notice] %>
   <p><%= flash[:notice] %></p>
@@ -9,8 +9,6 @@
 <% end %>
 
 <!-- CREATE TAG SECTION -->
-<h2>Create Tag</h2>
-
 <%= form_with model: @tag, url: tags_path, local: true do |f| %>
   <% if @tag.errors.any? %>
     <div>
@@ -24,7 +22,7 @@
   <% end %>
 
   <div>
-    <%= f.label :title, "Tag name" %>
+    <%= f.label :title, "New tag name" %>
     <%= f.text_field :title %>
   </div>
 
@@ -33,22 +31,31 @@
   </div>
 <% end %>
 
+
 <hr>
 
 <ul>
   <% @tags.each do |tag| %>
     <li>
+      <!-- current value -->
       <strong><%= tag.title %></strong>
 
-      <%= form_with model: tag, url: tag_path(tag), method: :patch, local: true do |f| %>
-        <div>
-          <%= f.label :title, "Rename" %>
-          <%= f.text_field :title, value: tag.title %>
-          <%= f.submit "Update" %>
-        </div>
-      <% end %>
+      <!-- HTML-only inline edit using <details> -->
+      <details>
+        <summary>Edit</summary>
 
-      <%= button_to "Delete", tag_path(tag), method: :delete,
+        <%= form_with model: tag, url: tag_path(tag), method: :patch, local: true do |f| %>
+          <div>
+            <!-- IMPORTANT: label is NOT "Tag name" -->
+            <%= f.label :title, "New title for #{tag.title}", for: "tag_#{tag.id}_title" %>
+            <%= f.text_field :title, id: "tag_#{tag.id}_title", value: tag.title %>
+            <%= f.submit "Save" %>
+          </div>
+        <% end %>
+      </details>
+
+      <%= button_to "Delete", tag_path(tag),
+            method: :delete,
             data: { confirm: "Are you sure you want to delete this tag?" } %>
     </li>
   <% end %>
