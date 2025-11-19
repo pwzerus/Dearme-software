@@ -88,8 +88,8 @@ ActiveRecord::Schema[8.0].define(version: 2025_11_19_030554) do
     t.bigint "creator_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["creator_id", "title"], name: "index_tags_on_creator_id_and_title", unique: true
     t.index ["creator_id"], name: "index_tags_on_creator_id"
-    t.index ["title"], name: "index_tags_on_title", unique: true
   end
 
   create_table "users", force: :cascade do |t|

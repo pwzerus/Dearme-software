@@ -7,6 +7,19 @@ Given("I already have a tag named {string}") do |title|
   Tag.where(creator: @current_user, title: title).first_or_create!
 end
 
+Given("another user already has a tag named {string}") do |title|
+  # Create a different user directly in the DB; no login change
+  other_user = User.create!(
+    email: "other_user_#{SecureRandom.hex(4)}@example.com",
+    first_name: "Other",
+    last_name: "User"
+  )
+
+  Tag.where(creator: other_user, title: title).first_or_create!
+end
+
+
+
 When("I create a new tag named {string}") do |title|
   visit tags_path
 
@@ -50,6 +63,20 @@ When("I rename the tag {string} to an empty name") do |old_name|
     click_button "Save"
   end
 end
+
+When("I visit the tags page") do
+  visit tags_path
+end
+
+When("I delete the tag {string}") do |title|
+  visit tags_path
+
+  # Find the <li> that contains this tag name and click its Delete button
+  within(:xpath, "//li[.//strong[text()='#{title}']]") do
+    click_button "Delete"
+  end
+end
+
 
 Then("I should see {string} in my list of tags") do |title|
   visit tags_path

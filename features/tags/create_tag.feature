@@ -21,3 +21,10 @@ Feature: Create a new tag
     When I create a new tag named "Travel"
     Then I should see an error that the tag name has already been taken
     And the tag should not be duplicated
+
+  Scenario: Create a tag with the same name as another user
+    Given another user already has a tag named "Travel"
+    And I am logged in
+    And I do not already have a tag named "Travel"
+    When I create a new tag named "Travel"
+    Then I should see "Travel" in my list of tags
