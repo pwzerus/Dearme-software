@@ -6,9 +6,9 @@ class ApplicationController < ActionController::Base
 
   private
   def current_user
-    # populate from session set in LoginController#omniauth_callback
-    # Any request that needs a user (like /dashboard) is protected.
-    # If there is no logged in user, it sets the flash message "Login required!" and redirects to login_path
+     # populate from session set in LoginController#omniauth_callback
+     # Any request that needs a user (like /dashboard) is protected.
+     # If there is no logged in user, it sets the flash message "Login required!" and redirects to login_path
      @current_user ||= User.find_by(id: session[:user_id])
   end
 
