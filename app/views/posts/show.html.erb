@@ -1,0 +1,22 @@
+<h2>Post Details</h2>
+
+<p>Created by: <%= @post.creator.email %></p>
+
+<p>Archived: <%= @post.archived ? "Yes" : "No" %></p>
+
+<% unless @post.title.blank? %>
+  <p>Title: <%= @post.title %></p>
+<% end %>
+
+<% unless @post.description.blank? %>
+  <p>Description: <%= @post.creator.description %></p>
+<% end %>
+
+<% @post.media_files.each do |mf| %>
+  <% case mf.type %>
+  <% when MediaFile::Type::IMAGE %>
+    <% image_tag url_for(mf.file), alt: mf.file.filename %>
+  <% else %>
+    <% link_to file.filename, url_for(file) %>
+  <% end %>
+<% end %>
