@@ -3,14 +3,22 @@ Given("I do not already have a tag named {string}") do |title|
 end
 
 When("I create a new tag named {string}") do |title|
-  visit new_tag_path
-  fill_in "Title", with: title
+  visit tags_path
+
+  # Open the <details> "Create Tag" section if needed
+  click_on "Create Tag"
+
+  fill_in "Tag name", with: title
   click_button "Create Tag"
 end
 
 When("I attempt to create a new tag with no name") do
-  visit new_tag_path
-  fill_in "Title", with: ""
+  visit tags_path
+
+  # Open the <details> "Create Tag" section if needed
+  click_on "Create Tag"
+
+  fill_in "Tag name", with: ""
   click_button "Create Tag"
 end
 
