@@ -1,0 +1,56 @@
+Given("OmniAuth is in test mode") do
+  OmniAuth.config.test_mode = true
+end
+
+Given("a valid Google OAuth response") do
+  OmniAuth.config.mock_auth[:google_oauth2] = OmniAuth::AuthHash.new(
+    provider: "google_oauth2",
+    uid: "1234567890",
+    info: {
+      email: "test-user@example.com",
+      first_name: "Test",
+      last_name: "User"
+    }
+  )
+end
+
+Given("Google returns an authentication error") do
+  OmniAuth.config.mock_auth[:google_oauth2] = :invalid_credentials
+end
+
+Given("I am signed in with Google") do
+  step "OmniAuth is in test mode"
+  step "a valid Google OAuth response"
+  visit login_path
+  # login/new.html.erb uses a button_to with this text
+  click_button "Continue with Google"
+end
+
+When("I visit the login page") do
+  visit login_path
+end
+
+When("I visit the dashboard page") do
+  visit dashboard_path
+end
+
+When("I click {string}") do |text|
+  # Works for both links and buttons
+  begin
+    click_link text
+  rescue Capybara::ElementNotFound
+    click_button text
+  end
+end
+
+Then("I should be on the login page") do
+  expect(page).to have_current_path(login_path, ignore_query: true)
+end
+
+Then("I should be on the dashboard page") do
+  expect(page).to have_current_path(dashboard_path, ignore_query: true)
+end
+
+Then("I should see {string}") do |text|
+  expect(page).to have_content(text)
+end
