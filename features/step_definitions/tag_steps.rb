@@ -27,6 +27,30 @@ When("I attempt to create a new tag with no name") do
   click_button "Create Tag"
 end
 
+When("I rename the tag {string} to {string}") do |old_name, new_name|
+  visit tags_path
+
+  # Find the <li> corresponding to this tag
+  within(:xpath, "//li[.//strong[text()='#{old_name}']]") do
+    # Open the inline edit panel
+    find("summary", text: "Edit").click
+
+    # Fill in the new title and save
+    fill_in "New title for #{old_name}", with: new_name
+    click_button "Save"
+  end
+end
+
+When("I rename the tag {string} to an empty name") do |old_name|
+  visit tags_path
+
+  within(:xpath, "//li[.//strong[text()='#{old_name}']]") do
+    find("summary", text: "Edit").click
+    fill_in "New title for #{old_name}", with: ""
+    click_button "Save"
+  end
+end
+
 Then("I should see {string} in my list of tags") do |title|
   visit tags_path
   expect(page).to have_content(title)
@@ -51,4 +75,19 @@ Then("the tag should not be duplicated") do
   titles = Tag.where(creator: @current_user).pluck(:title)
   # Ensure no title appears more than once
   expect(titles.tally.values.max).to eq(1)
+end
+
+Then("I should not see {string} in my list of tags") do |title|
+  visit tags_path
+  expect(page).not_to have_content(title)
+end
+
+Then("I should still have a tag named {string}") do |title|
+  # Check in the DB...
+  raise "No current user – use 'Given I am logged in' first" unless @current_user
+  expect(Tag.where(creator: @current_user, title: title)).to exist
+
+  # ...and on the page
+  visit tags_path
+  expect(page).to have_content(title)
 end
