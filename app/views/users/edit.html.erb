@@ -1,0 +1,48 @@
+<!-- app/views/users/edit.html.erb -->
+<h2>Edit profile</h2>
+
+<%= form_with model: @user, url: account_path, method: :patch, local: true do |f| %>
+  <% if @user.errors.any? %>
+    <div class="errors">
+      <h2><%= pluralize(@user.errors.count, "error") %> prevented saving:</h2>
+      <ul>
+        <% @user.errors.full_messages.each do |msg| %>
+          <li><%= msg %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div>
+    <%= f.label :first_name %><br>
+    <%= f.text_field :first_name %>
+  </div>
+
+  <div>
+    <%= f.label :last_name %><br>
+    <%= f.text_field :last_name %>
+  </div>
+
+  <!-- Add more fields here if you permit them in user_params -->
+
+  <div>
+    <%= f.submit "Save changes" %>
+  </div>
+<% end %>
+
+<hr>
+<h2>logout</h2>
+<%= button_to "Log out",
+              logout_path,
+              method: :delete,
+              class: "btn btn-danger",
+              data: { turbo: false, confirm: "Are you sure you want to log out?" } %>
+
+<hr>
+<h2>Delete account</h2>
+<p>This will permanently delete your account and associated data.</p>
+
+<%= button_to "Delete my account",
+              account_path,
+              method: :delete,
+              data: { confirm: "Are you sure you want to delete your account? This cannot be undone." } %>
