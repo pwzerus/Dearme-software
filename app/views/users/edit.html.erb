@@ -1,7 +1,11 @@
 <!-- app/views/users/edit.html.erb -->
 <h2>Edit profile</h2>
 
-<%= form_with model: @user, url: account_path, method: :patch, local: true do |f| %>
+<%= form_with model: @user,
+              url: account_path,
+              method: :patch,
+              local: true,
+              multipart: true do |f| %>
   <% if @user.errors.any? %>
     <div class="errors">
       <h2><%= pluralize(@user.errors.count, "error") %> prevented saving:</h2>
@@ -24,6 +28,28 @@
   </div>
 
   <!-- Add more fields here if you permit them in user_params -->
+  <hr>
+<h2>Profile picture</h2>
+
+<% if @user.profile_picture&.file&.attached? %>
+  <div>
+    <p>Current picture:</p>
+    <%= image_tag @user.profile_picture.file, alt: "Profile picture", size: "150x150" %>
+  </div>
+
+  <div>
+    <%= check_box_tag :remove_profile_picture, "1", false %>
+    <%= label_tag :remove_profile_picture, "Remove current profile picture" %>
+  </div>
+<% else %>
+  <p>No profile picture set.</p>
+<% end %>
+
+<div>
+  <%= label_tag :profile_picture_file, "Upload new profile picture" %><br>
+  <%= file_field_tag :profile_picture_file, accept: "image/*" %>
+</div>
+<hr>
 
   <div>
     <%= f.submit "Save changes" %>

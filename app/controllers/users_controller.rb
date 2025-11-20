@@ -10,6 +10,7 @@ class UsersController < ApplicationController
     @user = current_user
 
     if @user.update(user_params)
+      handle_profile_picture(@user)
       redirect_to dashboard_path, notice: "Profile updated successfully."
     else
       # Re render the form with validation errors
@@ -38,4 +39,27 @@ class UsersController < ApplicationController
       :last_name
     )
   end
+
+  def handle_profile_picture(user)
+  remove_flag = params[:remove_profile_picture] == "1"
+  new_file = params[:profile_picture_file]
+
+  # Remove existing picture
+  if remove_flag
+    user.profile_picture&.destroy
+  end
+
+  # Replace with new picture
+  if new_file.present?
+    user.profile_picture&.destroy
+
+    media = MediaFile.new(
+      parent: user,
+      file_type: MediaFile::Type::IMAGE,
+      description: "Profile picture"
+    )
+    media.file.attach(new_file)
+    media.save
+  end
+end
 end
