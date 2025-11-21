@@ -1,9 +1,20 @@
 <h2>Post Details</h2>
 
-<%= button_to "Edit",
-               edit_post_path(@post),
-               method: :get,
-               class: "btn btn-primary" %>
+<% if current_user == @post.creator %>
+  <%= button_to "Edit",
+                edit_post_path(@post),
+                method: :get,
+                class: "btn btn-primary" %>
+  <%= button_to "Delete",
+                post_path(@post),
+                method: :delete,
+                class: "btn btn-danger",
+                form: {
+                  data: {
+                    turbo_confirm: "Sure you want to delete ?"
+                  }
+                } %>
+<% end %>
 
 <p>Created by: <%= @post.creator.email %></p>
 

@@ -1,10 +1,10 @@
 class PostsController < ApplicationController
   # Set @post based on params[:id]
-  before_action :set_post!, only: [:show, :edit, :update]
+  before_action :set_post!, only: [ :show, :edit, :update, :destroy ]
 
   # Validate that the editor of the post is the
   # creator and no one else
-  before_action :validate_post_creator!, only: [ :edit, :update]
+  before_action :validate_post_creator!, only: [ :edit, :update, :destroy ]
 
   def create
     @post = Post.new(creator: current_user,
@@ -71,9 +71,22 @@ class PostsController < ApplicationController
 
     redirect_to post_path(@post)
   rescue => e
-      Rails.logger.info "Failed to update post: #{e.message}"
-      flash[:error] = "Failed to update the post: #{e.message}"
-      redirect_to dashboard_path
+    Rails.logger.info "Failed to update post: #{e.message}"
+    flash[:error] = "Failed to update the post: #{e.message}"
+    redirect_to dashboard_path
+  end
+
+  # DELETE /posts/:id to delete a post
+  def destroy
+    @post.destroy!
+    Rails.logger.info "Post destroyed successfully"
+    flash[:notice] = "Post destroyed successfully"
+
+    redirect_to dashboard_path
+  rescue => e
+    Rails.logger.info "Failed to destroy post: #{e.message}"
+    flash[:error] = "Failed to destroy the post: #{e.message}"
+    redirect_to dashboard_path
   end
 
   private
