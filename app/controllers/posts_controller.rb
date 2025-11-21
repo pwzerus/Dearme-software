@@ -123,7 +123,7 @@ class PostsController < ApplicationController
               :title,
               :description,
               :archived,
-              media_files_attributes: [:id, :_destroy]
+              media_files_attributes: [ :id, :_destroy ]
               )
     end
 end

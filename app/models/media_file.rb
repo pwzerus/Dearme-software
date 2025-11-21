@@ -29,11 +29,11 @@ class MediaFile < ApplicationRecord
   # a file
   def self.type_from_content_type(content_type)
     if content_type.starts_with?("image/")
-      return Type::IMAGE
+      Type::IMAGE
     elsif content_type.starts_with?("video/")
-      return Type::VIDEO
+      Type::VIDEO
     elsif content_type.starts_with?("audio/")
-      return Type::AUDIO
+      Type::AUDIO
     else
       raise ArgumentError, "Unknown content type: #{content_type}"
     end
