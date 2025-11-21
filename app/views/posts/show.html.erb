@@ -40,7 +40,7 @@
 <% end %>
 
 <% unless @post.description.blank? %>
-  <p>Description: <%= @post.creator.description %></p>
+  <p>Description: <%= @post.description %></p>
 <% end %>
 
 <% @post.media_files.each do |mf| %>
