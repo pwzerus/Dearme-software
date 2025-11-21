@@ -24,4 +24,18 @@ class MediaFile < ApplicationRecord
   def belongs_to_post?
     parent_type == "Post"
   end
+
+  # Get the MediaFile::Type from the html format content type of
+  # a file
+  def self.type_from_content_type(content_type)
+    if content_type.starts_with?("image/")
+      return Type::IMAGE
+    elsif content_type.starts_with?("video/")
+      return Type::VIDEO
+    elsif content_type.starts_with?("audio/")
+      return Type::AUDIO
+    else
+      raise ArgumentError, "Unknown content type: #{content_type}"
+    end
+  end
 end

@@ -1,0 +1,33 @@
+<h2> Edit Post </h2>
+
+<%= form_with(model: @post, local: true, multipart: true) do |f| %>
+  <div>
+    <%= f.label :title %>
+    <%= f.text_field :title %>
+  </div>
+
+  <div>
+    <%= f.label :description %>
+    <%= f.text_area :description %>
+  </div>
+
+  <div>
+    <%= label_tag :add_files %>
+    <%= file_field_tag "added_files[]", multiple: true %>
+  </div>
+
+  <%= f.fields_for :media_files do |mf_form| %>
+    <% mf = mf_form.object %>
+    <div>
+      <%= render partial: "shared/media_file",
+                 locals: { media_file: mf } %>
+
+      <!-- Files having _destroy set (i.e. checkbox selected) will -->
+      <!-- be removed from the post -->
+      <%= mf_form.label :_destroy, "Remove" %>
+      <%= mf_form.check_box :_destroy %>
+    </div>
+  <% end %>
+
+  <%= f.submit "Update" %>
+<% end %>

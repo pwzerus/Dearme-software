@@ -1,0 +1,8 @@
+<!-- Partial to display a media file -->
+<% case  media_file.file_type %>
+<% when MediaFile::Type::IMAGE %>
+  <%= image_tag media_file.file, alt: media_file.file.filename %>
+<% else %>
+  <%= link_to media_file.file.filename, media_file.file %>
+<% end %>
+

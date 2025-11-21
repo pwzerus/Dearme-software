@@ -52,6 +52,10 @@ group :development, :test do
   gem "rspec-rails"
   gem "rubocop-rails-omakase", require: false
   gem "rubocop-rspec", require: false
+
+  # Limit byebug installations only to these environments where we
+  # know its supported.
+  gem "byebug", platforms: [ :mri, :windows ]
 end
 
 group :development do
