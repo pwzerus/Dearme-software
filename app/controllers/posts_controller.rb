@@ -122,6 +122,7 @@ class PostsController < ApplicationController
       params.require(:post).permit(
               :title,
               :description,
+              :archived,
               media_files_attributes: [:id, :_destroy]
               )
     end

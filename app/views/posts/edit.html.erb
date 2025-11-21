@@ -1,6 +1,6 @@
 <h2> Edit Post </h2>
 
-<%= form_with(model: @post, local: true, multipart: true) do |f| %>
+<%= form_with model: @post, local: true, multipart: true do |f| %>
   <div>
     <%= f.label :title %>
     <%= f.text_field :title %>

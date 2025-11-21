@@ -14,11 +14,26 @@
                     turbo_confirm: "Sure you want to delete ?"
                   }
                 } %>
+
+  <% if @post.archived %>
+    <!-- allow the user to post the post -->
+    <%= form_with model: @post, local: true do |f| %>
+      <%= f.hidden_field :archived, value: false %>
+      <%= f.submit "Post", class: "btn btn-primary" %>
+    <% end %>
+  <% else %>
+    <!-- allow the user to Archive the post-->
+    <%= form_with model: @post, local: true do |f| %>
+      <%= f.hidden_field :archived, value: true %>
+      <%= f.submit "Archive", class: "btn btn-primary" %>
+    <% end %>
+  <% end %>
+
 <% end %>
 
 <p>Created by: <%= @post.creator.email %></p>
 
-<p>Archived: <%= @post.archived ? "Yes" : "No" %></p>
+<p>Status: <%= @post.archived ? "Archived" : "Posted" %></p>
 
 <% unless @post.title.blank? %>
   <p>Title: <%= @post.title %></p>
