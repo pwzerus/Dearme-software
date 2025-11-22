@@ -3,9 +3,6 @@ Feature: Google sign in and dashboard access
   I want to sign in with Google
   So that I can see the dashboard
 
-  Background:
-    Given OmniAuth is in test mode
-
   Scenario: Redirect to login when not signed in
     When I visit the dashboard page
     Then I should be on the login page
