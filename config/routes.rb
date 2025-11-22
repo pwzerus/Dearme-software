@@ -13,4 +13,6 @@ Rails.application.routes.draw do
   resource :account, only: [ :edit, :update, :destroy ], controller: "users"
 
   root to: redirect("/dashboard")
+
+  resources :posts, only: [ :create, :show, :edit, :update, :destroy ]
 end

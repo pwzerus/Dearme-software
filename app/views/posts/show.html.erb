@@ -1,0 +1,49 @@
+<h2>Post Details</h2>
+
+<% if current_user == @post.creator %>
+  <%= button_to "Edit",
+                edit_post_path(@post),
+                method: :get,
+                class: "btn btn-primary" %>
+  <%= button_to "Delete",
+                post_path(@post),
+                method: :delete,
+                class: "btn btn-danger",
+                form: {
+                  data: {
+                    turbo_confirm: "Sure you want to delete ?"
+                  }
+                } %>
+
+  <% if @post.archived %>
+    <!-- allow the user to post the post -->
+    <%= form_with model: @post, local: true do |f| %>
+      <%= f.hidden_field :archived, value: false %>
+      <%= f.submit "Post", class: "btn btn-primary" %>
+    <% end %>
+  <% else %>
+    <!-- allow the user to Archive the post-->
+    <%= form_with model: @post, local: true do |f| %>
+      <%= f.hidden_field :archived, value: true %>
+      <%= f.submit "Archive", class: "btn btn-primary" %>
+    <% end %>
+  <% end %>
+
+<% end %>
+
+<p>Created by: <%= @post.creator.email %></p>
+
+<p>Status: <%= @post.archived ? "Archived" : "Posted" %></p>
+
+<% unless @post.title.blank? %>
+  <p>Title: <%= @post.title %></p>
+<% end %>
+
+<% unless @post.description.blank? %>
+  <p>Description: <%= @post.description %></p>
+<% end %>
+
+<% @post.media_files.each do |mf| %>
+  <%= render partial: "shared/media_file",
+             locals: { media_file: mf } %>
+<% end %>

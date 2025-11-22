@@ -2,3 +2,9 @@
 <p>Welcome <%= current_user&.first_name || "there" %>!</p>
 
 <%= link_to "User Account", edit_account_path %>
+
+<%= button_to "Create Post",
+              posts_path,
+              method: :post,
+              class: "btn btn-primary" %>
+
