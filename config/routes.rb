@@ -9,8 +9,8 @@ Rails.application.routes.draw do
 
   get "/dashboard", to: "dashboard#show", as: :dashboard
 
-   # Account management for the currently logged in user
-  resource :account, only: [:edit, :update, :destroy], controller: "users"
-  
+  # Account management for the currently logged in user
+  resource :account, only: [ :edit, :update, :destroy ], controller: "users"
+
   root to: redirect("/dashboard")
 end
