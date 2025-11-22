@@ -1,5 +1,6 @@
 Given("OmniAuth is in test mode") do
-  OmniAuth.config.test_mode = true
+  # No setup needed here.
+  # OmniAuth test mode is already enabled in features/support/omniauth.rb
 end
 
 Given("a valid Google OAuth response") do
@@ -36,11 +37,7 @@ end
 
 When("I click {string}") do |text|
   # Works for both links and buttons
-  begin
-    click_link text
-  rescue Capybara::ElementNotFound
-    click_button text
-  end
+  click_link_or_button text
 end
 
 Then("I should be on the login page") do

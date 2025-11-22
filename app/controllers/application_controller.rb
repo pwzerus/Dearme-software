@@ -4,7 +4,6 @@ class ApplicationController < ActionController::Base
 
   helper_method :current_user
 
-  private
   def current_user
      # populate from session set in LoginController#omniauth_callback
      # Any request that needs a user (like /dashboard) is protected.
