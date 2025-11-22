@@ -9,4 +9,6 @@ Rails.application.routes.draw do
 
   get "/dashboard", to: "dashboard#show", as: :dashboard
   root to: redirect("/dashboard")
+
+  resources :posts, only: [ :create, :show, :edit, :update, :destroy ]
 end

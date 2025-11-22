@@ -6,3 +6,8 @@
               method: :delete,
               class: "btn btn-danger",
               data: { turbo: false, confirm: "Are you sure you want to log out?" } %>
+
+<%= button_to "Create Post",
+              posts_path,
+              method: :post,
+              class: "btn btn-primary" %>
