@@ -62,7 +62,11 @@
               logout_path,
               method: :delete,
               class: "btn btn-danger",
-              data: { turbo: false, confirm: "Are you sure you want to log out?" } %>
+              form: {
+                data: {
+                  turbo_confirm: "Are you sure you want to log out?"
+                }
+              } %>
 
 <hr>
 <h2>Delete account</h2>
@@ -71,4 +75,9 @@
 <%= button_to "Delete my account",
               account_path,
               method: :delete,
-              data: { confirm: "Are you sure you want to delete your account? This cannot be undone." } %>
+              class: "btn btn-danger",
+              form: {
+                data: {
+                  turbo_confirm: "Are you sure you want to delete your account? This cannot be undone."
+                }
+              } %>
