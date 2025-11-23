@@ -19,7 +19,6 @@ Given("another user already has a tag named {string}") do |title|
 end
 
 
-
 When("I create a new tag named {string}") do |title|
   visit tags_path
 

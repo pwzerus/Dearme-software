@@ -19,6 +19,7 @@ Given("I am signed in with Google") do
   visit login_path
   # login/new.html.erb uses a button_to with this text
   click_button "Continue with Google"
+  @current_user = User.find_by(email: "test-user@example.com")
 end
 
 When("I visit the login page") do

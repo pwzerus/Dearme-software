@@ -4,7 +4,7 @@ Feature: Delete a tag
   So that I can keep my tagging system organized
 
   Scenario: Successfully delete one of my tags
-    Given I am logged in
+    Given I am signed in with Google
     And I already have a tag named "Travel"
     And I already have a tag named "Food"
     When I delete the tag "Travel"

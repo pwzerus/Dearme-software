@@ -4,7 +4,7 @@ Feature: View my tags
   So that I can quickly choose, edit, or delete them
 
   Scenario: See all my tags in the list
-    Given I am logged in
+    Given I am signed in with Google
     And I already have a tag named "Travel"
     And I already have a tag named "Food"
     And I already have a tag named "Work"
@@ -14,7 +14,7 @@ Feature: View my tags
     And I should see "Work" in my list of tags
 
   Scenario: I cannot see other users' tags
-    Given I am logged in
+    Given I am signed in with Google
     And I already have a tag named "Travel"
     And another user already has a tag named "Secret"
     When I visit the tags page
