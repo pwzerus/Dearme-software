@@ -10,30 +10,26 @@ class TagsController < ApplicationController
     @tag = current_user.tags.new(tag_params)
 
     if @tag.save
-      flash[:notice] = "Tag was successfully created."
-      redirect_to tags_path
+      redirect_to tags_path, notice: "Tag was successfully created."
     else
       # Re-render index with errors and existing tags
       @tags = current_user.tags.order(:title)
-      render :index, status: :unprocessable_entity
+      render :index, status: :unprocessable_content
     end
   end
 
   def update
     if @tag.update(tag_params)
-      flash[:notice] = "Tag was successfully updated."
-      redirect_to tags_path
+      redirect_to tags_path, notice: "Tag was successfully updated."
     else
       @tags = current_user.tags.order(:title)
-      @tag_being_edited = @tag
-      render :index, status: :unprocessable_entity
+      render :index, status: :unprocessable_content
     end
   end
 
   def destroy
     @tag.destroy
-    flash[:notice] = "Tag was successfully deleted."
-    redirect_to tags_path
+    redirect_to tags_path, notice: "Tag was successfully deleted."
   end
 
   private
