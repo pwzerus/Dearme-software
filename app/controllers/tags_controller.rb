@@ -1,5 +1,5 @@
 class TagsController < ApplicationController
-  before_action :set_tag, only: [:update, :destroy]
+  before_action :set_tag, only: [ :update, :destroy ]
 
   def index
     @tags = current_user.tags.order(:title)

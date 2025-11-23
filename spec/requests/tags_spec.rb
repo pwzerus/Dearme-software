@@ -103,7 +103,6 @@ RSpec.describe "Tags", type: :request do
 
         expect(response).not_to have_http_status(:success)
     end
-
   end
 
   describe "DELETE /tags/:id" do
@@ -127,6 +126,5 @@ RSpec.describe "Tags", type: :request do
 
         expect(response).not_to have_http_status(:success)
     end
-
   end
 end

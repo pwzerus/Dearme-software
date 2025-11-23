@@ -4,6 +4,6 @@ class ChangeTagUniquenessOnTags < ActiveRecord::Migration[8.0]
     remove_index :tags, :title, if_exists: true
 
     # Add a composite unique index on [creator_id, title]
-    add_index :tags, [:creator_id, :title], unique: true
+    add_index :tags, [ :creator_id, :title ], unique: true
   end
 end
