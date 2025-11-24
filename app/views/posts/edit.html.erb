@@ -13,7 +13,9 @@
 
   <div>
     <%= label_tag :add_files %>
-    <%= file_field_tag "added_files[]", multiple: true %>
+    <%= file_field_tag "added_files[]",
+        multiple: true,
+        id: "added_files" %>
   </div>
 
   <%= f.fields_for :media_files do |mf_form| %>
