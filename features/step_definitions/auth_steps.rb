@@ -18,14 +18,6 @@ Given("Google returns an authentication error") do
   OmniAuth.config.mock_auth[:google_oauth2] = :invalid_credentials
 end
 
-Given("I am signed in with Google") do
-  step "a valid Google OAuth response"
-  visit login_path
-  # login/new.html.erb uses a button_to with this text
-  click_button "Continue with Google"
-  @current_user = User.find_by(email: "test-user@example.com")
-end
-
 When("I visit the login page") do
   visit login_path
 end
