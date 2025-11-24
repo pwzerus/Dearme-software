@@ -1,0 +1,56 @@
+<h1>Tags</h1>
+
+<!-- CREATE TAG SECTION -->
+<%= form_with model: @tag, url: tags_path, local: true do |f| %>
+  <% if @tag.errors.any? %>
+    <div>
+      <h3><%= pluralize(@tag.errors.count, "error") %> prevented this tag from being saved:</h3>
+      <ul>
+        <% @tag.errors.full_messages.each do |msg| %>
+          <li><%= msg %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div>
+    <%= f.label :title, "New tag name" %>
+    <%= f.text_field :title %>
+  </div>
+
+  <div>
+    <%= f.submit "Create Tag" %>
+  </div>
+<% end %>
+
+
+<hr>
+
+<ul>
+  <% @tags.each do |tag| %>
+    <li>
+      <!-- current value -->
+      <strong><%= tag.title %></strong>
+
+      <!-- HTML-only inline edit using <details> -->
+      <details>
+        <summary>Edit</summary>
+
+        <%= form_with model: tag, url: tag_path(tag), method: :patch, local: true do |f| %>
+          <div>
+            <!-- IMPORTANT: label is NOT "Tag name" -->
+            <%= f.label :title, "New title for #{tag.title}", for: "tag_#{tag.id}_title" %>
+            <%= f.text_field :title, id: "tag_#{tag.id}_title", value: tag.title %>
+            <%= f.submit "Save" %>
+          </div>
+        <% end %>
+      </details>
+
+      <%= button_to "Delete",
+        tag_path(tag),
+        method: :delete,
+        class: "btn btn-danger",
+        form: { data: { turbo_confirm: "Sure you want to delete ?" } } %>
+    </li>
+  <% end %>
+</ul>

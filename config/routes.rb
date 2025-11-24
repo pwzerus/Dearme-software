@@ -7,6 +7,8 @@ Rails.application.routes.draw do
   get    "/auth/failure",           to: "login#failure",             as: :auth_failure
   delete "/logout",                  to: "login#destroy",             as: :logout
 
+  resources :tags
+
   get "/dashboard", to: "dashboard#show", as: :dashboard
   root to: redirect("/dashboard")
 
