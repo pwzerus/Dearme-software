@@ -19,6 +19,3 @@ When("I click {string}") do |text|
   # Works for both links and buttons
   click_link_or_button text
 end
-
-
-
