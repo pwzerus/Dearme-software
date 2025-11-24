@@ -1,13 +1,5 @@
 <h1>Tags</h1>
 
-<% if flash[:notice] %>
-  <p><%= flash[:notice] %></p>
-<% end %>
-
-<% if flash[:alert] %>
-  <p><%= flash[:alert] %></p>
-<% end %>
-
 <!-- CREATE TAG SECTION -->
 <%= form_with model: @tag, url: tags_path, local: true do |f| %>
   <% if @tag.errors.any? %>
@@ -54,9 +46,11 @@
         <% end %>
       </details>
 
-      <%= button_to "Delete", tag_path(tag),
-            method: :delete,
-            data: { confirm: "Are you sure you want to delete this tag?" } %>
+      <%= button_to "Delete",
+        tag_path(tag),
+        method: :delete,
+        class: "btn btn-danger",
+        form: { data: { turbo_confirm: "Sure you want to delete ?" } } %>
     </li>
   <% end %>
 </ul>
