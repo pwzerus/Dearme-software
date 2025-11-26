@@ -21,4 +21,7 @@ class Post < ApplicationRecord
   # e.g. member.avatar_attributes = { id: '2', _destroy: '1' }
   # to destory the avatar associated with the member
   accepts_nested_attributes_for :media_files, allow_destroy: true
+
+  has_many :user_post_mentions, dependent: :destroy
+  has_many :mentioned_users, through: :user_post_mentions, source: :user
 end

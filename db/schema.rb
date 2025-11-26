@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_11_19_230614) do
+ActiveRecord::Schema[8.0].define(version: 2025_11_26_161955) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -92,6 +92,15 @@ ActiveRecord::Schema[8.0].define(version: 2025_11_19_230614) do
     t.index ["creator_id"], name: "index_tags_on_creator_id"
   end
 
+  create_table "user_post_mentions", force: :cascade do |t|
+    t.bigint "post_id", null: false
+    t.bigint "user_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["post_id"], name: "index_user_post_mentions_on_post_id"
+    t.index ["user_id"], name: "index_user_post_mentions_on_user_id"
+  end
+
   create_table "users", force: :cascade do |t|
     t.string "email"
     t.string "first_name"
@@ -107,4 +116,6 @@ ActiveRecord::Schema[8.0].define(version: 2025_11_19_230614) do
   add_foreign_key "posts", "locations"
   add_foreign_key "posts", "users", column: "creator_id"
   add_foreign_key "tags", "users", column: "creator_id"
+  add_foreign_key "user_post_mentions", "posts"
+  add_foreign_key "user_post_mentions", "users"
 end

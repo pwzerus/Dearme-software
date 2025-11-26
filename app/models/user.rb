@@ -23,4 +23,7 @@ class User < ApplicationRecord
           as: :parent,
           class_name: "MediaFile",
           dependent: :destroy
+
+  has_many :user_post_mentions, dependent: :destroy
+  has_many :posts_mentioned_in, through: :user_post_mentions, source: :post
 end
