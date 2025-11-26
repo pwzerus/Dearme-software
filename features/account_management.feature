@@ -5,7 +5,6 @@ Feature: Manage my account
   And I can delete my account when I no longer need it
 
   Background:
-    Given OmniAuth is in test mode
     And I am signed in with Google
 
   Scenario: Edit my personal details

@@ -14,7 +14,8 @@ class UsersController < ApplicationController
       redirect_to dashboard_path, notice: "Profile updated successfully."
     else
       # Re render the form with validation errors
-      render :edit, status: :unprocessable_entity
+      flash.now[:alert] ||= "Could not update profile picture."
+      render :edit, status: :unprocessable_content
     end
   end
 
@@ -41,12 +42,13 @@ class UsersController < ApplicationController
   end
 
   def handle_profile_picture(user)
-  remove_flag = params[:remove_profile_picture] == "1"
-  new_file = params[:profile_picture_file]
+    remove_flag = params[:remove_profile_picture] == "1"
+    new_file = params[:profile_picture_file]
 
   # Remove existing picture
   if remove_flag
     user.profile_picture&.destroy
+    Rails.logger.info("Removed profile picture for user #{user.id}")
   end
 
   # Replace with new picture
@@ -59,7 +61,14 @@ class UsersController < ApplicationController
       description: "Profile picture"
     )
     media.file.attach(new_file)
-    media.save
+    begin
+      media.save!
+      Rails.logger.info("Uploaded new profile picture for user #{user.id}")
+      true
+    rescue ActiveRecord::RecordInvalid => e
+      Rails.logger.error("Failed to save profile picture. Error: #{e.message}")
+      false
+    end
   end
 end
 end
