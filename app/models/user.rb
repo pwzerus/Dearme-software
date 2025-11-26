@@ -26,4 +26,38 @@ class User < ApplicationRecord
 
   has_many :user_post_mentions, dependent: :destroy
   has_many :posts_mentioned_in, through: :user_post_mentions, source: :post
+
+  # Whom is this user viewing (a viewee is the one who is viewed) ?
+  #
+  # Notice the flip in the foregin key its viewer_id and not viewee_id
+  # that's because for those many viewees that I (User) can have they should
+  # identify me by the foreign key viewer_id (as I am their viewer)
+  #
+  # Its similar to post belongs to creator via class name user and
+  # inside user we have has_many :posts, foreign_key: :creator_id,
+  # dependent: :destroy,
+  #
+  # i.e that associated post should identify me (we're currently in the user
+  # model, so me's the user) by creator_id
+  has_many :viewee_user_view_users,
+           foreign_key: :viewer_id,
+           class_name: "UserViewUser"
+  has_many :viewees, through: :viewee_user_view_users, source: :viewee
+
+  # Who are the viewers for this user ?
+  # Notice the flip in the foregin key its viewee_id and not viewer_id
+  # that's because for those many viewers that I (User) have they should
+  # identify me by the foreign key viewee_id (as I am their viewee, i.e.
+  # they're viewing me)
+  #
+  # Its similar to post belongs to creator via class name user and
+  # inside user we have has_many :posts, foreign_key: :creator_id,
+  # dependent: :destroy,
+  #
+  # i.e that associated post should identify me (we're currently in the user
+  # model, so me's the user) by creator_id
+  has_many :viewer_user_view_users,
+           foreign_key: :viewee_id,
+           class_name: "UserViewUser"
+  has_many :viewers, through: :viewer_user_view_users, source: :viewer
 end
