@@ -8,6 +8,7 @@ Rails.application.routes.draw do
   delete "/logout",                  to: "login#destroy",             as: :logout
 
   resources :tags
+  resources :post_tags, only: [:create]
 
   get "/dashboard", to: "dashboard#show", as: :dashboard
   root to: redirect("/dashboard")
