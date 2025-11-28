@@ -85,7 +85,6 @@ RSpec.describe "PostTags", type: :request do
       expect(response).to have_http_status(:not_found)
       expect(response.body).to include("Not Found").or include("not found")
     end
-
     it "does not allow a user to use a tag they do not own" do
       # current_user (from let(:user)) owns this post
       user_post = Post.create!(
@@ -138,6 +137,53 @@ RSpec.describe "PostTags", type: :request do
       }.not_to change(PostTag, :count)
 
       # We still want to land back on the post page (idempotent behavior)
+      expect(response).to redirect_to(post_path(post_record))
+      follow_redirect!
+      expect(response).to have_http_status(:ok)
+    end
+  end
+  describe "DELETE /post_tags/:id" do
+    let(:user) do
+      User.create!(
+        email: "rspec_user@example.com",
+        first_name: "RSpec",
+        last_name: "User"
+      )
+    end
+
+    before do
+      allow_any_instance_of(ApplicationController)
+        .to receive(:current_user)
+        .and_return(user)
+    end
+
+    let(:post_record) do 
+      Post.create!( 
+        creator: user,
+        title: "RSpec Post"
+      )
+    end
+    
+    let(:tag) do
+      Tag.create!(
+        creator: user,
+        title: "RSpec Tag"
+      )
+    end
+    
+    it "allows the owner to remove a tag from their post" do
+      post_tag = PostTag.create!(post: post_record, tag: tag)
+
+      expect(PostTag.where(id: post_tag.id)).to exist
+      expect(post_record.tags).to include(tag)
+
+      expect {
+        delete post_tag_path(post_tag)
+      }.to change(PostTag, :count).by(-1)
+
+      # Reload the post to check the association is really gone
+      expect(post_record.reload.tags).not_to include(tag)
+
       expect(response).to redirect_to(post_path(post_record))
       follow_redirect!
       expect(response).to have_http_status(:ok)

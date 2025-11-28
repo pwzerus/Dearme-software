@@ -13,6 +13,15 @@ class PostTagsController < ApplicationController
     end
   end
 
+  def destroy
+    @post_tag = find_post_tag_for_current_user
+    @post     = @post_tag.post
+
+    @post_tag.destroy
+
+    redirect_to post_path(@post), notice: "Tag removed from post."
+  end
+
   private
 
   def post_tag_params
@@ -27,5 +36,13 @@ class PostTagsController < ApplicationController
   # Only allow tags owned by the current user (creator)
   def find_tag_for_current_user
     Tag.where(creator: current_user).find(post_tag_params[:tag_id])
+  end
+
+  def find_post_tag_for_current_user
+    PostTag
+      .joins(:post, :tag)
+      .where(posts: { creator_id: current_user.id },
+             tags:  { creator_id: current_user.id })
+      .find(params[:id])
   end
 end
