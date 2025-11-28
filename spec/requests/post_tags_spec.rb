@@ -170,7 +170,7 @@ RSpec.describe "PostTags", type: :request do
         title: "RSpec Tag"
       )
     end
-    
+
     it "allows the owner to remove a tag from their post" do
       post_tag = PostTag.create!(post: post_record, tag: tag)
 
@@ -188,5 +188,40 @@ RSpec.describe "PostTags", type: :request do
       follow_redirect!
       expect(response).to have_http_status(:ok)
     end
+
+        it "does not allow a user to remove a tag from a post they do not own" do
+      # Create a second user who owns both post and tag
+      other_user = User.create!(
+        email: "other_delete_user@example.com",
+        first_name: "Boss",
+        last_name: "Other"
+      )
+
+      other_post = Post.create!(
+        creator: other_user,
+        title: "Other User Post"
+      )
+
+      other_tag = Tag.create!(
+        creator: other_user,
+        title: "Other User Tag"
+      )
+
+      post_tag = PostTag.create!(post: other_post, tag: other_tag)
+
+      # Ensure record exists before we try to delete it
+      expect(PostTag.where(id: post_tag.id)).to exist
+
+      # Destroy should NOT be called — user should never touch this record
+      expect_any_instance_of(PostTag).not_to receive(:destroy)
+
+      expect {
+        delete post_tag_path(post_tag)
+      }.not_to change(PostTag, :count)
+
+      expect(response).to have_http_status(:not_found)
+      expect(response.body).to include("Not Found").or include("not found")
+    end
+
   end
 end
