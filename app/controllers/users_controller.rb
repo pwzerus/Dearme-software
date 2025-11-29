@@ -45,30 +45,31 @@ class UsersController < ApplicationController
     remove_flag = params[:remove_profile_picture] == "1"
     new_file = params[:profile_picture_file]
 
-  # Remove existing picture
-  if remove_flag
-    user.profile_picture&.destroy
-    Rails.logger.info("Removed profile picture for user #{user.id}")
-  end
+    # Remove existing picture
+    if remove_flag
+      user.profile_picture&.destroy
+      Rails.logger.info("Removed profile picture for user #{user.id}")
+    end
 
-  # Replace with new picture
-  if new_file.present?
-    user.profile_picture&.destroy
+    # Replace with new picture
+    if new_file.present?
+      user.profile_picture&.destroy
 
-    media = MediaFile.new(
-      parent: user,
-      file_type: MediaFile::Type::IMAGE,
-      description: "Profile picture"
-    )
-    media.file.attach(new_file)
-    begin
-      media.save!
-      Rails.logger.info("Uploaded new profile picture for user #{user.id}")
-      true
-    rescue ActiveRecord::RecordInvalid => e
-      Rails.logger.error("Failed to save profile picture. Error: #{e.message}")
-      false
+      media = MediaFile.new(
+        parent: user,
+        file_type: MediaFile::Type::IMAGE,
+        description: "Profile picture"
+      )
+      media.file.attach(new_file)
+
+      begin
+        media.save!
+        Rails.logger.info("Uploaded new profile picture for user #{user.id}")
+        true
+      rescue ActiveRecord::RecordInvalid => e
+        Rails.logger.error("Failed to save profile picture. Error: #{e.message}")
+        false
+      end
     end
   end
-end
 end
