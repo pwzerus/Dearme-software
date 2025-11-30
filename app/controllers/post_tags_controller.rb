@@ -1,5 +1,4 @@
 class PostTagsController < ApplicationController
-
   def create
     @post = find_post_for_current_user
     @tag  = find_tag_for_current_user

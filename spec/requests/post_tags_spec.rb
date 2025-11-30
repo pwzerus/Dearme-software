@@ -17,13 +17,13 @@ RSpec.describe "PostTags", type: :request do
         .and_return(user)
     end
 
-    let(:post_record) do 
-      Post.create!( 
+    let(:post_record) do
+      Post.create!(
         creator: user,
         title: "RSpec Post"
       )
     end
-    
+
     let(:tag) do
       Tag.create!(
         creator: user,
@@ -157,13 +157,13 @@ RSpec.describe "PostTags", type: :request do
         .and_return(user)
     end
 
-    let(:post_record) do 
-      Post.create!( 
+    let(:post_record) do
+      Post.create!(
         creator: user,
         title: "RSpec Post"
       )
     end
-    
+
     let(:tag) do
       Tag.create!(
         creator: user,
@@ -222,6 +222,5 @@ RSpec.describe "PostTags", type: :request do
       expect(response).to have_http_status(:not_found)
       expect(response.body).to include("Not Found").or include("not found")
     end
-
   end
 end
