@@ -47,3 +47,14 @@
   <%= render partial: "shared/media_file",
              locals: { media_file: mf } %>
 <% end %>
+
+<% if @post.tags.any? %>
+  <section>
+    <h2>Tags</h2>
+    <ul>
+      <% @post.tags.order(:title).each do |tag| %>
+        <li><%= tag.title %></li>
+      <% end %>
+    </ul>
+  </section>
+<% end %>

@@ -6,6 +6,9 @@ class PostsController < ApplicationController
   # creator and no one else
   before_action :validate_post_creator!, only: [ :edit, :update, :destroy ]
 
+  before_action :load_tags!, only: [ :edit, :update ]
+
+
   def create
     @post = Post.new(creator: current_user,
                      title: default_post_title)
@@ -65,6 +68,9 @@ class PostsController < ApplicationController
       end
     end
 
+    tag_ids = Array(params.dig(:post, :tag_ids)).reject(&:blank?)
+    @post.tag_ids = tag_ids
+
     @post.update!(post_update_params)
     Rails.logger.info "Post #{@post.id} updated successfully"
     flash[:notice] = "Post updated successfully"
@@ -123,7 +129,13 @@ class PostsController < ApplicationController
               :title,
               :description,
               :archived,
+              tag_ids: [],
               media_files_attributes: [ :id, :_destroy ]
               )
+    end
+
+    def load_tags!
+      # Only show tags belonging to the current user
+      @tags = Tag.where(creator: current_user).order(:title)
     end
 end
