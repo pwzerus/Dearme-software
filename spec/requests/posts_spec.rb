@@ -31,7 +31,7 @@ RSpec.describe "PostsController", type: :request do
     end
 
     it "handles save failures and redirects to the dashboard with a message" do
-      errors_double = double(full_messages: ["something went wrong"])
+      errors_double = double(full_messages: [ "something went wrong" ])
       invalid_post  = instance_double(
         Post,
         save: false,
@@ -135,7 +135,7 @@ RSpec.describe "PostsController", type: :request do
     end
 
     it "creates media files when added_files param is present" do
-      Tempfile.create(["upload", ".png"]) do |tempfile|
+      Tempfile.create([ "upload", ".png" ]) do |tempfile|
         tempfile.write("fake image content")
         tempfile.rewind
 
@@ -158,7 +158,7 @@ RSpec.describe "PostsController", type: :request do
           post: {
             title: "With new media"
           },
-          added_files: [uploaded_file]
+          added_files: [ uploaded_file ]
         }
 
         expect(response).to redirect_to(post_path(post_record))
