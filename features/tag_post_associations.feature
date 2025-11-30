@@ -1,33 +1,30 @@
-Feature: Manage tag associations from the tag edit page
+Feature: Manage tags for a post from the post edit page
   As a logged-in user
   So that I can keep my posts organized by theme
-  I want to add and remove tags from my posts while editing a tag
+  I want to add and remove tags for a post while editing that post
 
   Background:
-    Given the following user exists:
-      | email                 | first_name | last_name |
-      | rspec_user@example.com | RSpec      | User      |
-    And I am logged in as "rspec_user@example.com"
-    And the following posts exist for "rspec_user@example.com":
-      | title            |
-      | First Journal    |
-      | Second Journal   |
-    And the following tags exist for "rspec_user@example.com":
-      | title      |
-      | Important  |
-    And the tag "Important" is associated with the post "First Journal"
-    And the tag "Important" is not associated with the post "Second Journal"
+    Given I am signed in with Google
+    And I already have a tag named "Important"
+    And a post exists with:
+      | title         |
+      | First Journal |
+    And a post exists with:
+      | title          |
+      | Second Journal |
+    And the post "First Journal" is tagged with "Important"
+    And the post "Second Journal" is not tagged with "Important"
 
-  Scenario: Add a tag to another post from the tag edit page
-    When I visit the edit page for the tag "Important"
-    And I check the post "Second Journal" for this tag
-    And I submit the tag form
+  Scenario: Add a tag to a post from the post edit page
+    When I visit the edit post page for "Second Journal"
+    And I check the tag "Important" for this post
+    And I click "Update Post"
     Then the post "Second Journal" should be tagged with "Important"
     And the post "First Journal" should still be tagged with "Important"
 
-  Scenario: Remove a tag from a post from the tag edit page
-    When I visit the edit page for the tag "Important"
-    And I uncheck the post "First Journal" for this tag
-    And I submit the tag form
+  Scenario: Remove a tag from a post from the post edit page
+    When I visit the edit post page for "First Journal"
+    And I uncheck the tag "Important" for this post
+    And I click "Update Post"
     Then the post "First Journal" should not be tagged with "Important"
     And the post "Second Journal" should still not be tagged with "Important"
