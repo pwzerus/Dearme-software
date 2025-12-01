@@ -2,6 +2,7 @@ class PostTag < ApplicationRecord
   belongs_to :post
   belongs_to :tag
 
+  validates :tag_id, uniqueness: { scope: :post_id } # Prevent duplicate tags on the same post
   validate :post_and_tag_creator_matches
 
   private
