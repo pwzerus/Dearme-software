@@ -5,6 +5,9 @@ class UserViewUser < ApplicationRecord
   # The one being viewed
   belongs_to :viewee, class_name: "User"
 
+  # No two records should have same viewer, viewee pair
+  validates :viewer_id, uniqueness: { scope: :viewee_id }
+
   # The user should not be able to view themselves (loop)
   validate :user_cannot_view_self
 

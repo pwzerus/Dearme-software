@@ -1,0 +1,28 @@
+<h2>Shared user feeds page</h2>
+
+<%if @current_user_view_users.blank? %>
+  <p>No shared feed to access</p>
+<% else %>
+  <table border = '1'>
+    <thead>
+      <th>S.No.</th>
+      <th>User Email</th>
+      <th>Requested access at</th>
+      <th>Access available till</th>
+    </thead>
+
+    <tbody>
+      <% @current_user_view_users.each_with_index do |uvu, idx| %>
+        <tr>
+          <td><%= idx + 1%></td>
+          <td><%= uvu.viewee.email %></td>
+          <td><%= uvu.updated_at %></td>
+          <td><%= uvu.expires_at %></td>
+
+          <td><%= link_to "View", shared_user_feed_path(uvu.viewee) %></td>
+          <!-- TODO: can add ignore here to ignore the shared feed -->
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+<% end %>
