@@ -136,6 +136,6 @@ class PostsController < ApplicationController
 
     def load_tags!
       # Only show tags belonging to the current user
-      @tags = Tag.where(creator: current_user).order(:title)
+      @tags = current_user.tags.order(:title)
     end
 end
