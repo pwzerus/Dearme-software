@@ -9,4 +9,3 @@ Given('a user exists with:') do |table|
           last_name: attrs["last_name"]
           )
 end
-
