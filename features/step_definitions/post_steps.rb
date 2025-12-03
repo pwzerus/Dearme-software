@@ -14,11 +14,7 @@ def validate_page_shows_media_file(filename, file_type)
   end
 end
 
-Given('a post exists with:') do |table|
-  # Converts the table into a hash with first column as keys
-  # and second column elements as corresponding values
-  attrs = table.rows_hash
-
+def create_post_helper(attrs)
   creator_email = attrs["creator_email"] ? attrs["creator_email"] :
                                            TEST_USER_EMAIL
   creator = User.find_by!(email: creator_email)
@@ -45,6 +41,29 @@ Given('a post exists with:') do |table|
               )
       mf.save!
     end
+  end
+end
+
+Given('a post exists with:') do |table|
+  # Converts the table into a hash with first column as keys
+  # and second column elements as corresponding values
+  attrs = table.rows_hash
+  create_post_helper(attrs)
+end
+
+Given('posts exist with following duplicated details for multiple users:') do |table|
+  attrs = table.rows_hash
+
+  # arr.map(&:strip) is equivalent to
+  # arr.map { |elem| elem.strip }
+  creator_emails = attrs["creator_emails"]
+
+  # Create the post with same details for each of the creators
+  creator_emails.split(",").map(&:strip).each do |creator_email|
+    post_attrs = attrs.dup
+    post_attrs.delete("creator_emails")
+    post_attrs["creator_email"] = creator_email
+    create_post_helper(post_attrs)
   end
 end
 
@@ -90,8 +109,35 @@ Then('I should be on the edit post page for {string}') do |title|
   expect(page).to have_current_path(edit_post_path(p))
 end
 
-Then('I should be on the view post page for {string}') do |title|
-  p = Post.find_by!(title: title)
+# Why this ugly regex ?
+# Because that allows me to have an optional parameter creator_email
+# in the gherkin style step which callers can use when they want to
+# differentiate cases when posts have same title but different creators
+# (If no optional creator email provided, post title is used to find the
+# post)
+#
+# "([^"]+)" - the surrounding quotes match the literal quotes in feature step
+# () parenthesis for grouping
+# [^"] means a character class which is negation of " (double quote)
+# [^"]+ means captures one or more of any character except " (double quote)
+#
+# The (?: for creator "([^"]+)")?$ i.e (?: ...)?
+# is for the optional parameter creator emaid, the ? at the end makes
+# it optional and (?: ) is for non capturing grouping
+# (See:
+# https://stackoverflow.com/questions/18346348/optional-parameter-in-cucumber
+# )
+#
+# The $ at the end to ensure that nothing extra after creator email id
+Then(
+  /I should be on the view post page for "([^"]+)"(?: for creator "([^"]+)")?$/
+  ) do |title, creator_email|
+  if creator_email.nil?
+    p = Post.find_by!(title: title)
+  else
+    creator = User.find_by!(email: creator_email)
+    p = Post.find_by!(title: title, creator: creator)
+  end
   expect(page).to have_current_path(post_path(p))
 end
 

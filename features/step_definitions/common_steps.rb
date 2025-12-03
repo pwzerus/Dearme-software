@@ -2,7 +2,7 @@ Given("I am signed in with Google") do
   step "a valid Google OAuth response"
   visit login_path
   # login/new.html.erb uses a button_to with this text
-  click_button "Continue with Google"
+  step "I click to sign in with Google"
 
   @current_user = User.find_by!(email: TEST_USER_EMAIL)
 end

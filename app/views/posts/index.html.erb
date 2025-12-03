@@ -1,0 +1,16 @@
+<!-- current_user is the logged in user -->
+<!-- @user is the user whose posts have to be shown -->
+
+<!-- @posts are the posts to show -->
+
+<!-- @filter_url is the url filters should send -->
+<!-- the request to on application of one of the filters -->
+
+<h2>Posts of <%= @user.email %></h2>
+
+<ol>
+  <% @posts.each do |p| %>
+    <li><%= p.title %>, <%= link_to "View", post_path(p) %></li>
+  <% end %>
+</ol>
+

@@ -1,4 +1,6 @@
 class PostsController < ApplicationController
+  include PostFilteringControllerConcern
+
   # Set @post based on params[:id]
   before_action :set_post!, only: [ :show, :edit, :update, :destroy ]
 
@@ -93,6 +95,17 @@ class PostsController < ApplicationController
     Rails.logger.info "Failed to destroy post: #{e.message}"
     flash[:error] = "Failed to destroy the post: #{e.message}"
     redirect_to dashboard_path
+  end
+
+  def index
+    @user = current_user
+    @posts = filter_posts_of(current_user)
+
+    # The filters of the page should send the filter requests to
+    # this end point (current one)
+    @filter_url = posts_path
+
+    render "posts/index"
   end
 
   private

@@ -60,4 +60,23 @@ class User < ApplicationRecord
            foreign_key: :viewee_id,
            class_name: "UserViewUser"
   has_many :viewers, through: :viewer_user_view_users, source: :viewer
+
+  # Do NOT access this directly, e.g.
+  # DON'T DO user.internal_feed_share_token, use
+  # user.feed_share_token method instead
+  has_one :internal_feed_share_token,
+          class_name: "FeedShareToken",
+          dependent: :destroy
+
+  # Always returns a valid, non expired feed share token
+  # (or raises an exception if encounters failure)
+  def feed_share_token
+    if self.internal_feed_share_token.nil?
+      self.internal_feed_share_token = FeedShareToken.generate!(self)
+    elsif internal_feed_share_token.expired?
+      self.internal_feed_share_token.refresh!
+    end
+
+    self.internal_feed_share_token
+  end
 end

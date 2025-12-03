@@ -19,7 +19,15 @@ class LoginController < ApplicationController
     user.save!
 
     session[:user_id] = user.id
-    redirect_to dashboard_path
+
+    if session[:original_url_to_visit].present?
+      # User tried to visit this url in our app before they got redirected
+      # to login page, so redirect them there after sucessful login.
+      original_url_to_visit = session.delete(:original_url_to_visit)
+      redirect_to original_url_to_visit
+    else
+      redirect_to dashboard_path
+    end
   rescue => e
     Rails.logger.error "Authentication failed: #{e.message}"
     flash[:alert] = "Authentication failed! #{e.message}"

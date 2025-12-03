@@ -11,3 +11,13 @@
               posts_path,
               method: :post,
               class: "btn btn-primary" %>
+
+<%= button_to "Share Feed",
+               feed_share_manager_path,
+               method: :get,
+               class: "btn btn-primary" %>
+
+<%= button_to "View feeds shared with me",
+              shared_user_feeds_path,
+              method: :get,
+              class: "btn btn-primary" %>
