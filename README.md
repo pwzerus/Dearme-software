@@ -416,6 +416,4 @@ Common things to check:
 
 -   For team development, share only template files `.env`
 
--   This app is designed for local development first, and can be adapted for deployment later
-
 * * * * *
