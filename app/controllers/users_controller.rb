@@ -9,8 +9,10 @@ class UsersController < ApplicationController
   def update
     @user = current_user
 
-    if @user.update(user_params)
-      handle_profile_picture(@user)
+    success = @user.update(user_params)
+    success &&= handle_profile_picture(@user)
+
+    if success
       redirect_to dashboard_path, notice: "Profile updated successfully."
     else
       # Re render the form with validation errors
@@ -45,31 +47,38 @@ class UsersController < ApplicationController
     remove_flag = params[:remove_profile_picture] == "1"
     new_file = params[:profile_picture_file]
 
-    # Remove existing picture
+    # Default: nothing to do, nothing failed
+    return true unless remove_flag || new_file.present?
+
+    # Remove existing picture if requested
     if remove_flag
       user.profile_picture&.destroy
       Rails.logger.info("Removed profile picture for user #{user.id}")
     end
 
+    # If there is no new file, we are done
+    return true unless new_file.present?
+
     # Replace with new picture
-    if new_file.present?
-      user.profile_picture&.destroy
+    user.profile_picture&.destroy
 
-      media = MediaFile.new(
-        parent: user,
-        file_type: MediaFile::Type::IMAGE,
-        description: "Profile picture"
+    media = MediaFile.new(
+      parent:      user,
+      file_type:   MediaFile::Type::IMAGE,
+      description: "Profile picture"
+    )
+    media.file.attach(new_file)
+
+    if media.save
+      Rails.logger.info("Uploaded new profile picture for user #{user.id}")
+      true
+    else
+      Rails.logger.error(
+        "Failed to save profile picture for user #{user.id}. " \
+        "Errors: #{media.errors.full_messages.join(', ')}"
       )
-      media.file.attach(new_file)
-
-      begin
-        media.save!
-        Rails.logger.info("Uploaded new profile picture for user #{user.id}")
-        true
-      rescue ActiveRecord::RecordInvalid => e
-        Rails.logger.error("Failed to save profile picture. Error: #{e.message}")
-        false
-      end
+      user.errors.add(:base, "Could not update profile picture.")
+      false
     end
   end
 end
