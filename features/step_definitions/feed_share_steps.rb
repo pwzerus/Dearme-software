@@ -77,3 +77,28 @@ Then('I should be on the shared feed page for user {string}') do |email|
   user = User.find_by!(email: email)
   expect(page).to have_current_path(shared_user_feed_path(user))
 end
+
+Given('I have access to the feed of user {string}') do |email|
+  # Logged in user always has access to his feed page (i.e. posts index
+  # page)
+  unless email == TEST_USER_EMAIL
+    # For some other user than the test user (i.e. other than logged in)
+    # the logged in user has access to his feed if he has accesses the other
+    # user's share feed link
+    step "I visit the feed share link of user '#{email}'"
+  end
+end
+
+When('I visit the feed page for user {string}') do |email|
+  if email == TEST_USER_EMAIL
+    visit posts_path
+  else
+    user = User.find_by!(email: email)
+    visit shared_user_feed_path(user)
+  end
+end
+
+When('I click to view post {string} from the feed') do |title|
+  li = find('li', text: title)
+  li.click_link('View')
+end
