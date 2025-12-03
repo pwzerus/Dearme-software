@@ -77,7 +77,13 @@ brew services start postgresql`
 
 Make sure the PostgreSQL server is running before you continue. (run the below command if the postgresql is already installed)
 
+**Ubuntu / Debian**
+
 `sudo service postgresql start`
+
+**macOS (Homebrew)**
+
+` brew services start postgresql`
 
 * * * * *
 
@@ -89,8 +95,7 @@ Open the PostgreSQL shell:
 
 Inside the `psql` prompt:
 
-`ALTER USER postgres WITH PASSWORD 'your_password_here';
-\q`
+`ALTER USER postgres WITH PASSWORD 'your_password_here';`
 
 * * * * *
 
@@ -98,9 +103,14 @@ Inside the `psql` prompt:
 
 In your terminal session, set:
 
-`export PGUSER=postgres
+```
+export PGUSER=postgres
+
 export PGPASSWORD=your_password_here
-export PGHOST=localhost`
+
+export PGHOST=localhost
+
+```
 
 These must be set in every terminal where you run Rails commands.
 These command shall be run after starting the postgres server. (i.e, these commands shall be executed sequentially when you start working with ubuntu in a new terminal/session)
@@ -285,14 +295,15 @@ Inside the **project root folder**, create a file named:
 
 Then add the following lines:
 
-`GOOGLE_CLIENT_ID=your_google_client_id_here
+```
+GOOGLE_CLIENT_ID=your_google_client_id_here
 GOOGLE_CLIENT_SECRET=your_google_client_secret_here
+```
 
 Save the file.
 
 > 🔒 **Important**\
 > Do not commit these values to Git, GitHub, or any public place.
-Make sure your environment is configured to load this file.
 
 * * * * *
 
