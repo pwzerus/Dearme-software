@@ -21,7 +21,8 @@ def create_post_helper(attrs)
 
   p = Post.create!(
           title: attrs["title"] ? attrs["title"] : "Some default title",
-          creator: creator
+          creator: creator,
+          archived: false
           )
 
   # A string consisting of comma separated file names
