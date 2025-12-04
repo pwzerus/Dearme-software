@@ -12,5 +12,7 @@ test:
   <<: *default
 
 production:
-  database: cache
+# We are not using a database backed cache for our app, hence
+# commenting out the following line:
+#  database: cache
   <<: *default
