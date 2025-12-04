@@ -6,11 +6,48 @@
 <!-- @filter_url is the url filters should send -->
 <!-- the request to on application of one of the filters -->
 
+<% filters_open = params[:start_date].present? ||
+                  params[:end_date].present? ||
+                  Array(params[:tags]).reject(&:blank?).any? %>
+
 <h2>Posts of <%= @user.email %></h2>
+
+<details <%= "open" if filters_open %>>
+  <summary data-test="feed-filter-toggle">Filters</summary>
+  <%= form_with url: @filter_url, method: :get, data: { test: "feed-filter-form" } do %>
+    <div>
+      <label for="start_date">Start date</label>
+      <%= date_field_tag :start_date, params[:start_date], id: "start_date" %>
+    </div>
+
+    <div>
+      <label for="end_date">End date</label>
+      <%= date_field_tag :end_date, params[:end_date], id: "end_date" %>
+    </div>
+
+    <% if @user_tags.present? %>
+      <fieldset>
+        <legend>Tags</legend>
+        <% @user_tags.each do |tag| %>
+          <div>
+            <%= check_box_tag "tags[]",
+                              tag.id,
+                              Array(params[:tags]).map(&:to_s).include?(tag.id.to_s),
+                              id: "tag_#{tag.id}" %>
+            <%= label_tag "tag_#{tag.id}", tag.title %>
+          </div>
+        <% end %>
+      </fieldset>
+    <% end %>
+
+    <div>
+      <%= submit_tag "Apply filters" %>
+    </div>
+  <% end %>
+</details>
 
 <ol>
   <% @posts.each do |p| %>
     <li><%= p.title %>, <%= link_to "View", post_path(p) %></li>
   <% end %>
 </ol>
-

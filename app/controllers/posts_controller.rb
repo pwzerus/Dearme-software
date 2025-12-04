@@ -99,7 +99,8 @@ class PostsController < ApplicationController
 
   def index
     @user = current_user
-    @posts = filter_posts_of(current_user)
+    @user_tags = @user.tags.order(:title)
+    @posts = filter_posts_of(@user)
 
     # The filters of the page should send the filter requests to
     # this end point (current one)
