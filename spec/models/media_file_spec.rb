@@ -117,4 +117,51 @@ RSpec.describe MediaFile, type: :model do
       ])
     end
   end
+
+  describe ".type_from_content_type" do
+    def type_checking_helper(content_types, expected_media_type)
+      content_types.each do |ct|
+        expect(MediaFile.type_from_content_type(ct)).to eq(expected_media_type)
+      end
+    end
+
+    context "image content type" do
+     let(:content_types) {
+          [ "image/jpeg", "image/png" ]
+      }
+
+      it "should return media file image type" do
+        type_checking_helper(content_types, MediaFile::Type::IMAGE)
+      end
+    end
+
+    context "video content type" do
+      let(:content_types) {
+          [ "video/mp4", "video/ogg" ]
+      }
+
+      it "should return media file video type" do
+        type_checking_helper(content_types, MediaFile::Type::VIDEO)
+      end
+    end
+
+    context "audio content type" do
+      let(:content_types) {
+          [ "audio/mpeg", "audio/mp3", "audio/wav" ]
+      }
+
+      it "should return media file audio type" do
+        type_checking_helper(content_types, MediaFile::Type::AUDIO)
+      end
+    end
+
+    context "unknown content type" do
+      let(:bad_content_type) { "are you kidding ?" }
+      it "should raise argument error" do
+        expect {
+            MediaFile.type_from_content_type(bad_content_type)
+        }.to raise_error(ArgumentError)
+      end
+    end
+  end
 end
