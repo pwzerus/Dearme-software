@@ -44,6 +44,21 @@ RSpec.configure do |config|
   # triggering implicit auto-inclusion in groups with matching metadata.
   config.shared_context_metadata_behavior = :apply_to_host_groups
 
+  config.before(:each) do
+    # How to generate ?
+    # len = ActiveSupport::MessageEncryptor.key_len
+    # salt = SecureRandom.random_bytes(len)
+    # key = ActiveSupport::KeyGenerator.new('password').generate_key(salt, len)
+    # mock_strict_base64_key = Base64.strict_encode64(key)
+    mock_strict_base64_key = "EoKIZLqLgoEkgIw8N4bXVtUv1LvNfdJhLEl3lmW8MjI="
+
+    allow(ENV).to receive(:[]).and_call_original
+    allow(ENV)
+    .to receive(:[])
+    .with("TOKEN_ENCRYPTOR_STRICT_BASE64_ENCODED_KEY")
+    .and_return(mock_strict_base64_key)
+  end
+
 # The settings below are suggested to provide a good initial experience
 # with RSpec, but feel free to customize to your heart's content.
 =begin
