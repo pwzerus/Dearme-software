@@ -146,7 +146,7 @@ RSpec.describe FeedShareController, type: :controller do
 
       get :shared_user_feeds
 
-      expect(controller.instance_variable_get(:@current_user_view_users)).to eq([active])
+      expect(controller.instance_variable_get(:@current_user_view_users)).to eq([ active ])
     end
   end
 end

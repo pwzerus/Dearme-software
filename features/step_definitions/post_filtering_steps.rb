@@ -1,14 +1,3 @@
-Given('user {string} has a tag named {string}') do |email, title|
-  user = User.find_by!(email: email)
-  Tag.where(creator: user, title: title).first_or_create!
-end
-
-Given('an active post exists for user {string} titled {string} created on {string}') do |email, title, date_str|
-  user = User.find_by!(email: email)
-  post = Post.create!(creator: user, title: title, archived: false)
-  post.update_columns(created_at: Date.parse(date_str))
-end
-
 When('I expand the feed filters') do
   find("[data-test='feed-filter-toggle']").click
 end

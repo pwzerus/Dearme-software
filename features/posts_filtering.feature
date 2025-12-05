@@ -9,18 +9,30 @@ Feature: Filtering posts in feeds
       | email      | altair@assasin.com |
       | first_name | Altair             |
       | last_name  | Assasin            |
-    And user "altair@assasin.com" has a tag named "Hiking"
-    And user "altair@assasin.com" has a tag named "Food"
-    And I already have a tag named "Travel"
-    And I already have a tag named "Work"
-    And an active post exists for user "test-user@example.com" titled "Trip Prep" created on "2024-05-01"
-    And the post "Trip Prep" is tagged with "Travel"
-    And an active post exists for user "test-user@example.com" titled "Office Update" created on "2024-05-02"
-    And the post "Office Update" is tagged with "Work"
-    And an active post exists for user "altair@assasin.com" titled "Trail Journal" created on "2024-05-10"
-    And the post "Trail Journal" is tagged with "Hiking"
-    And an active post exists for user "altair@assasin.com" titled "Cafe Notes" created on "2024-05-20"
-    And the post "Cafe Notes" is tagged with "Food"
+    And a post exists with:
+      | creator_email | test-user@example.com |
+      | title         | Trip Prep             |
+      | tags          | Travel                |
+      | archived      | false                 |
+      | created_at    | 2024-05-01            |
+    And a post exists with:
+      | creator_email | test-user@example.com |
+      | title         | Office Update         |
+      | tags          | Work                  |
+      | archived      | false                 |
+      | created_at    | 2024-05-02            |
+    And a post exists with:
+      | creator_email | altair@assasin.com |
+      | title         | Trail Journal      |
+      | tags          | Hiking             |
+      | archived      | false              |
+      | created_at    | 2024-05-10         |
+    And a post exists with:
+      | creator_email | altair@assasin.com |
+      | title         | Cafe Notes         |
+      | tags          | Food               |
+      | archived      | false              |
+      | created_at    | 2024-05-20         |
 
   Scenario: Filter my feed by a single tag
     Given I have access to the feed of user "test-user@example.com"

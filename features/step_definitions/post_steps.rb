@@ -22,8 +22,14 @@ def create_post_helper(attrs)
   p = Post.create!(
           title: attrs["title"] ? attrs["title"] : "Some default title",
           creator: creator,
-          archived: false
+          archived: attrs.key?("archived") ?
+                      ActiveModel::Type::Boolean.new.cast(attrs["archived"]) :
+                      Post.new.archived
           )
+
+  if attrs["created_at"].present?
+    p.update_column(:created_at, Time.zone.parse(attrs["created_at"]))
+  end
 
   # A string consisting of comma separated file names
   images_str = attrs["images"]
@@ -41,6 +47,15 @@ def create_post_helper(attrs)
               content_type: Marcel::MimeType.for(filepath)
               )
       mf.save!
+    end
+  end
+
+  # Associate tags if provided as comma-separated titles
+  tags_str = attrs["tags"]
+  if tags_str.present?
+    tags_str.split(",").map(&:strip).reject(&:blank?).each do |title|
+      tag = Tag.where(creator: creator, title: title).first_or_create!
+      p.tags << tag unless p.tags.include?(tag)
     end
   end
 end
