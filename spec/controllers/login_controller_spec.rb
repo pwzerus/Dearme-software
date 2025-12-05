@@ -70,6 +70,25 @@ RSpec.describe LoginController, type: :controller do
       end
     end
 
+    context "when user was trying to visit another url without loggin in" do
+      # No specific reason for choosing this url, could use any route url
+      # for the sake of this test and it should pass
+      let(:test_url) { posts_path }
+
+      before do
+       session[:original_url_to_visit] = test_url
+      end
+
+      it "should redirect to that url after successful login" do
+        get :omniauth_callback, params: { provider: "google_oauth2" }
+
+        # should clear it before redirecting
+        expect(session[:original_url_to_visit]).to be_nil
+
+        expect(response).to redirect_to(test_url)
+      end
+    end
+
     context "when saving the user raises an error" do
       before do
         allow(User).to receive(:find_or_initialize_by)
