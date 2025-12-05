@@ -27,9 +27,11 @@ Background:
   And posts exist with following duplicated details for multiple users:
     | creator_emails | test-user@example.com, altair@assasin.com |
     | title          | Test Post 1                               |
+    | archived       | false                                     |
   And posts exist with following duplicated details for multiple users:
     | creator_emails | test-user@example.com, altair@assasin.com |
     | title          | Test Post 2                               |
+    | archived       | false                                     |
 
 Scenario Outline: Viewing posts of a feed
   Given I have access to the feed of user "<feed_owner_email>"
@@ -52,4 +54,3 @@ Scenario Outline: Visiting a post from the feed
     | feed_owner_email      |
     | test-user@example.com |
     | altair@assasin.com    |
-

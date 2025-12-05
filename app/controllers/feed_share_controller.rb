@@ -96,6 +96,7 @@ class FeedShareController < ApplicationController
     # Render the posts index page showing posts of the
     # user to current user
     @user = user
+    @user_tags = @user.tags.order(:title)
     @posts = filter_posts_of(user)
 
     # The filters of the page should send the filter requests to
