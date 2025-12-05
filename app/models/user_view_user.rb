@@ -28,6 +28,13 @@ class UserViewUser < ApplicationRecord
             )
   end
 
+  def self.can_user_view_another?(user, another_user)
+    uvu = find_by(viewer: user, viewee: another_user)
+    return false if uvu.nil?
+
+    uvu.active?
+  end
+
   private
 
   def user_cannot_view_self

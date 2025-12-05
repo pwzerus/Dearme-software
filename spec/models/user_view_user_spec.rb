@@ -124,4 +124,46 @@ RSpec.describe UserViewUser, type: :model do
               )
     }.to raise_error(ActiveRecord::RecordInvalid)
   end
+
+  describe ".can_user_view_another?" do
+    context "user cannot view another user" do
+      it "should return false" do
+        expect(
+          UserViewUser.can_user_view_another?(test_user_1, test_user_2)
+          ).to be false
+      end
+    end
+
+    context "user could view another before but the view has now expired" do
+      before do
+        UserViewUser.create!(
+                viewer: test_user_1,
+                viewee: test_user_2,
+                expires_at: Time.current - 5.minutes
+                )
+      end
+
+      it "should return false" do
+        expect(
+          UserViewUser.can_user_view_another?(test_user_1, test_user_2)
+          ).to be false
+      end
+    end
+
+    context "user can view another user" do
+      before do
+        UserViewUser.create!(
+                viewer: test_user_1,
+                viewee: test_user_2,
+                expires_at: Time.current + 5.minutes
+                )
+      end
+
+      it "should return true" do
+        expect(
+          UserViewUser.can_user_view_another?(test_user_1, test_user_2)
+          ).to be true
+      end
+    end
+  end
 end

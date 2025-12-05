@@ -23,12 +23,22 @@ class PostsController < ApplicationController
     else
       Rails.logger.error "Failed to create a post #{post_error_str(@post)}"
 
-      flash[:notice] = "Failed to create a post #{post_error_str(@post)}"
+      flash[:alert] = "Failed to create a post #{post_error_str(@post)}"
       redirect_to dashboard_path
     end
   end
 
   def show
+    unless @post.creator == current_user ||
+           @post.mentioned_users.include?(current_user) ||
+           UserViewUser.can_user_view_another?(current_user,
+                                               @post.creator)
+      raise "You do not have access to view the post"
+    end
+  rescue => e
+    Rails.logger.info "Failed to show post: #{e.message}"
+    flash[:alert] = "Failed to show the post: #{e.message}"
+    redirect_to dashboard_path
   end
 
   # GET /posts/:id/edit to show the edit page for the post
@@ -81,7 +91,7 @@ class PostsController < ApplicationController
     redirect_to redirect_target
   rescue => e
     Rails.logger.info "Failed to update post: #{e.message}"
-    flash[:error] = "Failed to update the post: #{e.message}"
+    flash[:alert] = "Failed to update the post: #{e.message}"
     redirect_to dashboard_path
   end
 
@@ -94,7 +104,7 @@ class PostsController < ApplicationController
     redirect_to dashboard_path
   rescue => e
     Rails.logger.info "Failed to destroy post: #{e.message}"
-    flash[:error] = "Failed to destroy the post: #{e.message}"
+    flash[:alert] = "Failed to destroy the post: #{e.message}"
     redirect_to dashboard_path
   end
 
@@ -126,7 +136,7 @@ class PostsController < ApplicationController
       @post = Post.find(params[:id])
     rescue => e
       Rails.logger.error "Failed to find post, reason: #{e.message}"
-      flash[:error] = "Failed to find post, reason: #{e.message}"
+      flash[:alert] = "Failed to find post, reason: #{e.message}"
       redirect_to dashboard_path
     end
 
