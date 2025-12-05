@@ -77,7 +77,8 @@ class PostsController < ApplicationController
     Rails.logger.info "Post #{@post.id} updated successfully"
     flash[:notice] = "Post updated successfully"
 
-    redirect_to post_path(@post)
+    redirect_target = params[:redirect_to_tags].present? ? tags_path : post_path(@post)
+    redirect_to redirect_target
   rescue => e
     Rails.logger.info "Failed to update post: #{e.message}"
     flash[:error] = "Failed to update the post: #{e.message}"
