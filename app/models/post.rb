@@ -41,8 +41,13 @@ class Post < ApplicationRecord
 
       copy.save!
 
-      # Copy tags
-      copy.tags = tags
+      # Map tags for the new creator:
+      # - If copying your own post, this reuses the same tags
+      # - If copying another user's post, this creates/reuses tags with
+      #   same title for the new creator
+      copy.tags = tags.map do |tag|
+        Tag.find_or_create_by!(title: tag.title, creator: user)
+      end
 
       # Copy media files and reuse the same blobs
       media_files.find_each do |media|

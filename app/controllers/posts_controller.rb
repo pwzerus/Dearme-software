@@ -123,9 +123,9 @@ class PostsController < ApplicationController
     # POST /posts/:id/duplicate to duplicate a post
     #
     # Creates a copy of the given post for the current_user.
-    # - If current_user is the creator, 
+    # - If current_user is the creator,
     #   "create a copy of my created post".
-    # - If current_user is only a viewer, 
+    # - If current_user is only a viewer,
     #   "create a copy of some other user's post".
     #
     # We assume that if you can reach this action, you are allowed

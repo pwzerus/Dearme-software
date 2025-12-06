@@ -284,6 +284,100 @@ RSpec.describe PostsController, type: :controller do
     end
   end
 
+  describe "#duplicate" do
+    http_method = :post
+    action      = :duplicate
+
+    include_examples "handling of non existent post id", http_method, action
+
+    it "creates a duplicate of the post for the creator and redirects to edit page" do
+      # Explicitly create a post owned by the current test_user
+      original = Post.create!(
+        creator:     test_user,
+        title:       "Original title",
+        description: "Original description",
+        archived:    false
+      )
+
+      before_ids = Post.where(creator: test_user).pluck(:id)
+
+      post :duplicate, params: { id: original.id }
+
+      after_ids = Post.where(creator: test_user).pluck(:id)
+      new_ids   = after_ids - before_ids
+
+      # There should be exactly one new post for this user
+      expect(new_ids.size).to eq(1)
+
+      duplicated = Post.find(new_ids.first)
+
+      expect(duplicated.id).not_to eq(original.id)
+      expect(duplicated.creator).to eq(test_user)
+      expect(duplicated.title).to start_with("Copy of")
+      expect(duplicated.description).to eq(original.description)
+      expect(response).to redirect_to(edit_post_path(duplicated))
+      expect(flash[:notice]).not_to be_nil
+    end
+
+    context "when current user is allowed to view the post but is not the creator" do
+      let(:viewer) do
+        User.create!(
+          first_name: "Viewer",
+          last_name:  "User",
+          email:      "viewer@example.com"
+        )
+      end
+
+      let(:creator) do
+        User.create!(
+          first_name: "Creator",
+          last_name:  "User",
+          email:      "creator@example.com"
+        )
+      end
+
+      let(:other_post) do
+        Post.create!(
+          creator: creator,
+          title:   "Creator post",
+          description: "Some description"
+        )
+      end
+
+      before do
+        # Stub current_user so the controller thinks viewer is logged in
+        allow_any_instance_of(ApplicationController)
+          .to receive(:current_user).and_return(viewer)
+
+        # Allow viewer to see creator's posts
+        UserViewUser.create!(
+          viewer:    viewer,
+          viewee:    creator,
+          expires_at: Time.current + 5.minutes
+        )
+      end
+
+      it "creates a copy of the post owned by the viewer" do
+        before_ids = Post.where(creator: viewer).pluck(:id)
+
+        post :duplicate, params: { id: other_post.id }
+
+        after_ids = Post.where(creator: viewer).pluck(:id)
+        new_ids   = after_ids - before_ids
+
+        expect(new_ids).not_to be_empty
+
+        duplicated = Post.find(new_ids.first)
+
+        expect(duplicated.creator).to eq(viewer)
+        expect(duplicated.title).to start_with("Copy of")
+        expect(duplicated.description).to eq(other_post.description)
+        expect(response).to redirect_to(edit_post_path(duplicated))
+        expect(flash[:notice]).not_to be_nil
+      end
+    end
+  end
+
   describe "#destroy" do
     # Defining let variables for these isn't helpful since I
     # want to use them directly inside describe block for include_examples.
