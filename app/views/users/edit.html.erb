@@ -1,0 +1,85 @@
+<!-- app/views/users/edit.html.erb -->
+<h2>Edit profile</h2>
+
+<%= form_with model: @user,
+              url: account_path,
+              method: :patch,
+              local: true,
+              multipart: true do |f| %>
+  <% if @user.errors.any? %>
+    <div class="errors">
+      <h2><%= pluralize(@user.errors.count, "error") %> prevented saving:</h2>
+      <ul>
+        <% @user.errors.full_messages.each do |msg| %>
+          <li><%= msg %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div>
+    <%= f.label :first_name %><br>
+    <%= f.text_field :first_name %>
+  </div>
+
+  <div>
+    <%= f.label :last_name %><br>
+    <%= f.text_field :last_name %>
+  </div>
+
+  <hr>
+  <h2>Profile picture</h2>
+
+  <% if @user.profile_picture&.file&.attached? %>
+    <div>
+      <p>Current picture:</p>
+      <%= image_tag @user.profile_picture.file,
+                    alt: "Profile picture",
+                    size: "150x150" %>
+    </div>
+
+    <div>
+      <%= check_box_tag :remove_profile_picture, "1", false %>
+      <%= label_tag :remove_profile_picture, "Remove current profile picture" %>
+    </div>
+  <% else %>
+    <p>No profile picture set.</p>
+  <% end %>
+
+  <div>
+    <%= label_tag :profile_picture_file, "Upload new profile picture" %><br>
+    <%= file_field_tag :profile_picture_file, accept: "image/*" %>
+  </div>
+
+  <hr>
+
+  <div>
+    <%= f.submit "Save changes" %>
+  </div>
+<% end %>
+
+<hr>
+<h2>logout</h2>
+<%= button_to "Log out",
+              logout_path,
+              method: :delete,
+              class: "btn btn-danger",
+              form: {
+                data: {
+                  turbo_confirm: "Are you sure you want to log out?"
+                }
+              } %>
+
+<hr>
+<h2>Delete account</h2>
+<p>This will permanently delete your account and associated data.</p>
+
+<%= button_to "Delete my account",
+              account_path,
+              method: :delete,
+              class: "btn btn-danger",
+              form: {
+                data: {
+                  turbo_confirm: "Are you sure you want to delete your account? This cannot be undone."
+                }
+              } %>

@@ -1,11 +1,7 @@
 <h1>Dashboard</h1>
 <p>Welcome <%= current_user&.first_name || "there" %>!</p>
 
-<%= button_to "Log out",
-              logout_path,
-              method: :delete,
-              class: "btn btn-danger",
-              data: { turbo: false, confirm: "Are you sure you want to log out?" } %>
+<%= link_to "User Account", edit_account_path %>
 
 <%= button_to "Create Post",
               posts_path,

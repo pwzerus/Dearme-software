@@ -14,11 +14,12 @@ Feature: Google sign in and dashboard access
     And I click to sign in with Google
     Then I should be on the dashboard page
     And I should see "Welcome Test!"
-    And I should see "Log out"
+    And I should see "User Account"
 
   Scenario: Logout after signing in
     Given I am signed in with Google
-    When I click "Log out"
+    When I visit the user account page
+    And I click "Log out"
     Then I should be on the login page
     And I should see "Logged out successfully!"
     And I should see the sign in with Google interactive element

@@ -40,7 +40,6 @@ def create_post_helper(attrs)
       mf = p.media_files.new(file_type: MediaFile::Type::IMAGE)
 
       filepath = get_test_file_path_from_name(filename)
-      puts filepath
       mf.file.attach(
               io: File.open(filepath),
               filename: filename,
@@ -116,7 +115,6 @@ Then('I should see images attached to {string} post') do |title|
 end
 
 Then('I should see the {string} image') do |filename|
-  puts page.html
   validate_page_shows_media_file(filename, MediaFile::Type::IMAGE)
 end
 
