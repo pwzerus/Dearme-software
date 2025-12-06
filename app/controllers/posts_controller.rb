@@ -2,7 +2,7 @@ class PostsController < ApplicationController
   include PostFilteringControllerConcern
 
   # Set @post based on params[:id]
-  before_action :set_post!, only: [ :show, :edit, :update, :destroy ]
+  before_action :set_post!, only: [ :show, :edit, :update, :destroy, :duplicate ]
 
   # Validate that the editor of the post is the
   # creator and no one else
@@ -119,6 +119,32 @@ class PostsController < ApplicationController
 
     render "posts/index"
   end
+
+    # POST /posts/:id/duplicate to duplicate a post
+    #
+    # Creates a copy of the given post for the current_user.
+    # - If current_user is the creator, 
+    #   "create a copy of my created post".
+    # - If current_user is only a viewer, 
+    #   "create a copy of some other user's post".
+    #
+    # We assume that if you can reach this action, you are allowed
+    # to view the post.
+    def duplicate
+      copied_post = @post.duplicate_for(current_user)
+
+      if current_user == @post.creator
+        flash[:notice] = "Post duplicated successfully."
+      else
+        flash[:notice] = "Post copied to your posts."
+      end
+
+      redirect_to edit_post_path(copied_post)
+    rescue => e
+      Rails.logger.error "Failed to duplicate post #{@post.id}: #{e.message}"
+      flash[:alert] = "Failed to copy post."
+      redirect_to post_path(@post)
+    end
 
   private
     # Get the error string explaining why a post related

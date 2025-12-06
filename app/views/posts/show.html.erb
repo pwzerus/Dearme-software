@@ -14,7 +14,10 @@
                     turbo_confirm: "Sure you want to delete ?"
                   }
                 } %>
-
+  <%= button_to "Duplicate",
+                duplicate_post_path(@post),
+                method: :post,
+                class: "btn btn-secondary" %>
   <% if @post.archived %>
     <!-- allow the user to post the post -->
     <%= form_with model: @post, local: true do |f| %>
@@ -28,6 +31,13 @@
       <%= f.submit "Archive", class: "btn btn-primary" %>
     <% end %>
   <% end %>
+
+<!-- Post is not from the creator -->
+<% else %>
+    <%= button_to "Copy to my posts",
+                  duplicate_post_path(@post),
+                  method: :post,
+                  class: "btn btn-secondary" %>
 
 <% end %>
 

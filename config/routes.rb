@@ -17,7 +17,9 @@ Rails.application.routes.draw do
   root to: redirect("/dashboard")
 
   # we don't have :new for /posts
-  resources :posts, only: [ :create, :show, :edit, :update, :destroy, :index ]
+  resources :posts, only: [ :create, :show, :edit, :update, :destroy, :index ] do
+    post :duplicate, on: :member
+  end
 
   # Page to Manage sharing of a user's feed
   get "/feed_share_manager",
