@@ -14,6 +14,11 @@ class ApplicationController < ActionController::Base
   def require_login
     return if current_user
 
+    # Before redirecting to login page, store the url which user
+    # wanted to access, after login's complete we would redirect him
+    # back there (as the user's now logged in)
+    session[:original_url_to_visit] = request.fullpath
+
     flash[:alert] = "Login required!"
     redirect_to login_path
   end

@@ -1,0 +1,7 @@
+<h2>Feed share manager</h2>
+
+<p>
+  Provide this link to share your feeds:
+  <%= link_to "SHARE FEED LINK", @share_user_feed_url%>
+</p>
+<p> Link valid till: <%= current_user.feed_share_token.expires_at %></p>

@@ -72,4 +72,7 @@ group :test do
   gem "webdrivers", require: false
 
   gem "simplecov", require: false
+  gem "rails-controller-testing"
 end
+
+gem "aws-sdk-s3", require: false

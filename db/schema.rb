@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_11_19_230614) do
+ActiveRecord::Schema[8.0].define(version: 2025_12_01_183029) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -40,6 +40,15 @@ ActiveRecord::Schema[8.0].define(version: 2025_11_19_230614) do
     t.bigint "blob_id", null: false
     t.string "variation_digest", null: false
     t.index ["blob_id", "variation_digest"], name: "index_active_storage_variant_records_uniqueness", unique: true
+  end
+
+  create_table "feed_share_tokens", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.string "token"
+    t.datetime "expires_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["user_id"], name: "index_feed_share_tokens_on_user_id"
   end
 
   create_table "locations", force: :cascade do |t|
@@ -92,6 +101,26 @@ ActiveRecord::Schema[8.0].define(version: 2025_11_19_230614) do
     t.index ["creator_id"], name: "index_tags_on_creator_id"
   end
 
+  create_table "user_post_mentions", force: :cascade do |t|
+    t.bigint "post_id", null: false
+    t.bigint "user_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["post_id"], name: "index_user_post_mentions_on_post_id"
+    t.index ["user_id"], name: "index_user_post_mentions_on_user_id"
+  end
+
+  create_table "user_view_users", force: :cascade do |t|
+    t.bigint "viewer_id", null: false
+    t.bigint "viewee_id", null: false
+    t.datetime "expires_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["viewee_id"], name: "index_user_view_users_on_viewee_id"
+    t.index ["viewer_id", "viewee_id"], name: "index_user_view_users_on_viewer_id_and_viewee_id", unique: true
+    t.index ["viewer_id"], name: "index_user_view_users_on_viewer_id"
+  end
+
   create_table "users", force: :cascade do |t|
     t.string "email"
     t.string "first_name"
@@ -102,9 +131,14 @@ ActiveRecord::Schema[8.0].define(version: 2025_11_19_230614) do
 
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
+  add_foreign_key "feed_share_tokens", "users"
   add_foreign_key "post_tags", "posts"
   add_foreign_key "post_tags", "tags"
   add_foreign_key "posts", "locations"
   add_foreign_key "posts", "users", column: "creator_id"
   add_foreign_key "tags", "users", column: "creator_id"
+  add_foreign_key "user_post_mentions", "posts"
+  add_foreign_key "user_post_mentions", "users"
+  add_foreign_key "user_view_users", "users", column: "viewee_id"
+  add_foreign_key "user_view_users", "users", column: "viewer_id"
 end

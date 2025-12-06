@@ -1,10 +1,15 @@
 class PostsController < ApplicationController
+  include PostFilteringControllerConcern
+
   # Set @post based on params[:id]
   before_action :set_post!, only: [ :show, :edit, :update, :destroy ]
 
   # Validate that the editor of the post is the
   # creator and no one else
   before_action :validate_post_creator!, only: [ :edit, :update, :destroy ]
+
+  before_action :load_tags!, only: [ :edit, :update ]
+
 
   def create
     @post = Post.new(creator: current_user,
@@ -18,12 +23,22 @@ class PostsController < ApplicationController
     else
       Rails.logger.error "Failed to create a post #{post_error_str(@post)}"
 
-      flash[:notice] = "Failed to create a post #{post_error_str(@post)}"
+      flash[:alert] = "Failed to create a post #{post_error_str(@post)}"
       redirect_to dashboard_path
     end
   end
 
   def show
+    unless @post.creator == current_user ||
+           @post.mentioned_users.include?(current_user) ||
+           UserViewUser.can_user_view_another?(current_user,
+                                               @post.creator)
+      raise "You do not have access to view the post"
+    end
+  rescue => e
+    Rails.logger.info "Failed to show post: #{e.message}"
+    flash[:alert] = "Failed to show the post: #{e.message}"
+    redirect_to dashboard_path
   end
 
   # GET /posts/:id/edit to show the edit page for the post
@@ -65,14 +80,18 @@ class PostsController < ApplicationController
       end
     end
 
+    tag_ids = Array(params.dig(:post, :tag_ids)).reject(&:blank?)
+    @post.tag_ids = tag_ids
+
     @post.update!(post_update_params)
     Rails.logger.info "Post #{@post.id} updated successfully"
     flash[:notice] = "Post updated successfully"
 
-    redirect_to post_path(@post)
+    redirect_target = params[:redirect_to_tags].present? ? tags_path : post_path(@post)
+    redirect_to redirect_target
   rescue => e
     Rails.logger.info "Failed to update post: #{e.message}"
-    flash[:error] = "Failed to update the post: #{e.message}"
+    flash[:alert] = "Failed to update the post: #{e.message}"
     redirect_to dashboard_path
   end
 
@@ -85,8 +104,20 @@ class PostsController < ApplicationController
     redirect_to dashboard_path
   rescue => e
     Rails.logger.info "Failed to destroy post: #{e.message}"
-    flash[:error] = "Failed to destroy the post: #{e.message}"
+    flash[:alert] = "Failed to destroy the post: #{e.message}"
     redirect_to dashboard_path
+  end
+
+  def index
+    @user = current_user
+    @user_tags = @user.tags.order(:title)
+    @posts = filter_posts_of(@user)
+
+    # The filters of the page should send the filter requests to
+    # this end point (current one)
+    @filter_url = posts_path
+
+    render "posts/index"
   end
 
   private
@@ -105,7 +136,7 @@ class PostsController < ApplicationController
       @post = Post.find(params[:id])
     rescue => e
       Rails.logger.error "Failed to find post, reason: #{e.message}"
-      flash[:error] = "Failed to find post, reason: #{e.message}"
+      flash[:alert] = "Failed to find post, reason: #{e.message}"
       redirect_to dashboard_path
     end
 
@@ -123,7 +154,13 @@ class PostsController < ApplicationController
               :title,
               :description,
               :archived,
+              tag_ids: [],
               media_files_attributes: [ :id, :_destroy ]
               )
+    end
+
+    def load_tags!
+      # Only show tags belonging to the current user
+      @tags = current_user.tags.order(:title)
     end
 end

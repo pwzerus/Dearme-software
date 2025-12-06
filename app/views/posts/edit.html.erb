@@ -31,5 +31,25 @@
     </div>
   <% end %>
 
-  <%= f.submit "Update" %>
+  <fieldset>
+    <legend>Tags</legend>
+
+    <% @tags&.each do |tag| %>
+      <div>
+        <%= check_box_tag "post[tag_ids][]",
+                          tag.id,
+                          @post.tags.include?(tag),
+                          id: "tag_#{tag.id}" %>
+        <%= label_tag "tag_#{tag.id}", tag.title %>
+      </div>
+    <% end %>
+  </fieldset>
+
+  <div class="actions">
+    <%= f.submit "Update" %>
+    <%= button_tag "Update & Manage Tags",
+                   type: :submit,
+                   name: "redirect_to_tags",
+                   value: "true" %>
+  </div>
 <% end %>
