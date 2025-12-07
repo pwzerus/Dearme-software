@@ -9,6 +9,7 @@
 
 SHARE_FEED_LINK_TEXT = "SHARE FEED LINK"
 REVOKE_ACCESS_BTN_LABEL = "Revoke Access"
+IGNORE_SHARED_USER_FEED_BTN_LABEL = "Ignore"
 
 Then('I should see my feed share link') do
   expect(page).to have_link(SHARE_FEED_LINK_TEXT)
@@ -44,6 +45,10 @@ end
 When('I visit the feed share link of user {string}') do |email|
   u = User.find_by!(email: email)
   visit share_user_feed_path(token: u.feed_share_token.token)
+end
+
+Given('I visit the shared user feeds page') do
+  visit shared_user_feeds_path
 end
 
 Then('I should be on the shared user feeds page') do
@@ -124,5 +129,13 @@ When('I click to revoke feed access of user {string}') do |email|
   row = find('tr', text: email)
   within(row) do
     click_link_or_button REVOKE_ACCESS_BTN_LABEL
+  end
+end
+
+When('I click to ignore shared feed of user {string}') do |email|
+  user = User.find_by!(email: email)
+  row = find('tr', text: email)
+  within(row) do
+    click_link_or_button IGNORE_SHARED_USER_FEED_BTN_LABEL
   end
 end
