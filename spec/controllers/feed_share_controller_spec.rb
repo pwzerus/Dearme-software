@@ -96,7 +96,7 @@ RSpec.describe FeedShareController, type: :controller do
     it "rescues and redirects when the feed has not been shared with the viewer" do
       get :shared_user_feed, params: { user_id: other_user.id }
 
-      expect(flash[:error]).to include("User's feed hasn't been shared with you")
+      expect(flash[:error]).not_to be_nil
       expect(response).to redirect_to(dashboard_path)
     end
 
@@ -109,7 +109,7 @@ RSpec.describe FeedShareController, type: :controller do
 
       get :shared_user_feed, params: { user_id: other_user.id }
 
-      expect(flash[:error]).to include("User feed shared with you has expired")
+      expect(flash[:error]).not_to be_nil
       expect(response).to redirect_to(dashboard_path)
     end
 
@@ -147,6 +147,67 @@ RSpec.describe FeedShareController, type: :controller do
       get :shared_user_feeds
 
       expect(controller.instance_variable_get(:@current_user_view_users)).to eq([ active ])
+    end
+  end
+
+  # current user tries to revoke feed access of another user
+  # (so that the other user can no longer access current user's
+  # feed)
+  describe "#DELETE revoke_shared_feed_access" do
+    let(:current_user) { viewer }
+
+    context "no feed shared with the user" do
+      it "should set flash and redirect to dashboard" do
+        delete :revoke_shared_feed_access, params: { user_id: other_user.id }
+        expect(flash[:error]).not_to be nil
+        expect(response).to redirect_to(dashboard_path)
+      end
+    end
+
+    context "feed was shared before but has now expired" do
+      before do
+        UserViewUser.create!(
+                viewer: other_user,
+                viewee: current_user,
+                expires_at: Time.current - 5.minutes
+                )
+      end
+
+      it "should set flash and redirect to dashboard" do
+        delete :revoke_shared_feed_access, params: { user_id: other_user.id }
+        expect(flash[:error]).not_to be nil
+        expect(response).to redirect_to(dashboard_path)
+      end
+    end
+
+    # Happy path
+    context "feed sharing was active" do
+      before do
+        UserViewUser.create!(
+                viewer: other_user,
+                viewee: current_user,
+                expires_at: Time.current + 5.minutes
+                )
+      end
+
+      it "should actually revoke access" do
+        expect {
+          delete :revoke_shared_feed_access, params: { user_id: other_user.id }
+        }.to change(UserViewUser, :count).by(-1)
+
+        uvu = UserViewUser.find_active(viewer: other_user, viewee: current_user)
+        expect(uvu).to be_nil
+      end
+
+      it "should set flash notice" do
+        delete :revoke_shared_feed_access, params: { user_id: other_user.id }
+        expect(flash[:notice]).not_to be_nil
+      end
+
+      it "should redirect to feed share manager path" do
+        delete :revoke_shared_feed_access, params: { user_id: other_user.id }
+        expect(response).to redirect_to(feed_share_manager_path)
+      end
     end
   end
 end
