@@ -34,7 +34,7 @@ img {
 
 /* Base link color and hover transition */
 a {
-  color: #db8445;
+  color: #9f5f32;
   text-decoration: none;
   transition: color 0.15s ease, opacity 0.15s ease;
 }
@@ -159,7 +159,7 @@ p {
 
 /* Destructive or warning action */
 .btn-danger {
-  background: #ef4444;
+  background: #d51e1e;
   border-color: transparent;
   color: white;
   box-shadow: 0 8px 20px rgba(239, 68, 68, 0.4);
