@@ -40,7 +40,7 @@ a {
 }
 
 a:hover {
-  color: #db8445a1;
+  color: #000000a1;
 }
 
 /* Shared heading styling (font, weight, color) */
@@ -55,12 +55,12 @@ h4 {
 }
 
 h1 {
-  font-size: 2.2rem;
+  font-size: 1.8rem;
 }
 
 /* Section heading */
 h2 {
-  font-size: 1.8rem;
+  font-size: 1.2rem;
 }
 
 /* Subsection heading */
@@ -98,6 +98,8 @@ p {
   max-width: 900px;
   margin: 0 auto;
   padding: 0.8rem 1rem;
+  display: flex;
+  align-items: center;
 }
 
 /* Brand text styling */
@@ -147,8 +149,8 @@ p {
 .btn-primary {
   background: linear-gradient(135deg, #90ae64, #9bb475);
   border-color: transparent;
-  color: white;
-  box-shadow: 0 8px 20px rgba(255, 255, 255, 0.352);
+  color: rgb(33, 24, 46);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.352);
 }
 
 .btn-primary:hover {
@@ -209,4 +211,183 @@ textarea:focus {
   border-color: #38bdf8;
   box-shadow: 0 0 0 1px rgba(56, 189, 248, 0.6);
   background: #90ae64ad;
+}
+
+/* ------------------------------------
+   Flash messages
+------------------------------------ */
+
+.flash {
+  padding: 0.6rem 1rem;
+  text-align: center;
+  font-size: 0.9rem;
+}
+
+.flash.notice {
+  background: #90ae64;
+  color: #ffffff;
+}
+
+.flash.alert {
+  background: #ef4444;
+  color: #ffffff;
+}
+
+/* ------------------------------------
+   Layout & Sidebar (Mobile-style ALWAYS)
+------------------------------------ */
+
+/* Wrapper for sidebar + main content */
+.app-shell {
+  display: flex;
+  position: relative;
+}
+
+/* Main content column */
+.main-shell {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Center page contents similarly to header width */
+.main-content {
+  padding: 1rem;
+}
+
+/* Any direct child of main (sections, forms, divs, etc.) will be centered */
+.main-content > * {
+  max-width: 800px;   /* same width you liked on the dashboard */
+  margin: 0 auto 1.5rem;  /* center horizontally, add space at bottom */
+}
+
+/* Hidden checkbox used to control sidebar visibility */
+.sidebar-toggle-checkbox {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* Hamburger button ALWAYS visible */
+.sidebar-toggle-button {
+  display: inline-flex;
+  margin-right: 0.75rem;
+  padding: 0.35rem 0.55rem;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  font-size: 1rem;
+  cursor: pointer;
+  color: #fefce8;
+}
+
+/* Sidebar ALWAYS behaves like mobile slide-out */
+.sidebar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 260px;
+  max-width: 80%;
+  padding: 1rem;
+  background: #20361a; /* keep your green theme */
+  color: #f9fafb;
+  transform: translateX(-100%);
+  transition: transform 0.18s ease-out;
+  z-index: 200;
+  box-shadow: 4px 0 12px rgba(0, 0, 0, 0.35);
+}
+
+.sidebar-toggle-checkbox:checked ~ .sidebar {
+  transform: translateX(0);
+}
+
+.sidebar-inner {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.sidebar-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.75rem;
+}
+
+.sidebar-title {
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #fefce8;
+}
+
+/* Close button ALWAYS visible */
+.sidebar-close-button {
+  display: inline-block;
+  cursor: pointer;
+  font-size: 1.3rem;
+  line-height: 1;
+  padding: 0.1rem 0.3rem;
+  border-radius: 999px;
+  color: #fefce8;
+}
+
+.sidebar-menu {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.sidebar-btn {
+  width: 100%;
+  justify-content: flex-start;
+  text-align: left;
+}
+
+/* ------------------------------------
+   Responsive behavior
+------------------------------------ */
+
+@media (max-width: 768px) {
+  .app-shell {
+    position: relative;
+  }
+
+  /* Sidebar becomes a slide-in panel on small screens */
+  .sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100%;
+    max-width: 80%;
+    width: 260px;
+    transform: translateX(-100%);
+    transition: transform 0.18s ease-out;
+    z-index: 200;
+    box-shadow: 4px 0 12px rgba(0, 0, 0, 0.35);
+  }
+
+  /* When checkbox is checked, show the sidebar */
+  .sidebar-toggle-checkbox:checked ~ .sidebar {
+    transform: translateX(0);
+  }
+
+  /* Show hamburger button in header */
+  .sidebar-toggle-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  /* Show close button inside the sidebar */
+  .sidebar-close-button {
+    display: inline-block;
+  }
+}
+
+.page-container {
+  max-width: 900px;   /* or whatever matches your dashboard layout */
+  margin: 0 auto;
+  padding: 1rem;
 }
