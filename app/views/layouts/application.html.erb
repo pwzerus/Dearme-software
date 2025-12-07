@@ -1,24 +1,25 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
   <head>
-    <title><%= content_for(:title) || "Project3 Group4 Repo" %></title>
+    <title>DearMe</title>
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="mobile-web-app-capable" content="yes">
+
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
 
     <%= yield :head %>
 
-    <%# Enable PWA manifest for installable apps (make sure to enable in config/routes.rb too!) %>
-    <%#= tag.link rel: "manifest", href: pwa_manifest_path(format: :json) %>
-
     <link rel="icon" href="/icon.png" type="image/png">
     <link rel="icon" href="/icon.svg" type="image/svg+xml">
     <link rel="apple-touch-icon" href="/icon.png">
 
-    <%# Includes all stylesheet files in app/assets/stylesheets %>
+    <%# Enable PWA manifest for installable apps (make sure to enable in config/routes.rb too!) %>
+    <%#= tag.link rel: "manifest", href: pwa_manifest_path(format: :json) %>
+
     <%= stylesheet_link_tag :app, "data-turbo-track": "reload" %>
+    <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
     <%= javascript_importmap_tags %>
   </head>
 
@@ -26,7 +27,76 @@
     <% flash.each do |key, message| %>
       <div class="flash <%= key %>"><%= message %></div>
     <% end %>
-    
-    <%= yield %>
+
+    <% if controller_name == "login" %>
+      <%= yield %>
+    <% else %>
+      <div class="app-shell">
+        <!-- Hidden checkbox used to toggle sidebar-->
+        <input type="checkbox"
+               id="sidebar-toggle"
+               class="sidebar-toggle-checkbox"
+               aria-hidden="true" />
+
+        <!-- Left sidebar -->
+        <aside class="sidebar">
+          <div class="sidebar-inner">
+            <div class="sidebar-header">
+              <span class="sidebar-title">Menu</span>
+            </div>
+
+            <nav class="sidebar-menu">
+              <%= button_to "Create Post",
+                          posts_path,
+                          method: :post,
+                          class: "btn btn-primary sidebar-btn" %>
+
+              <%= link_to "All Posts",
+                          posts_path,
+                          class: "btn btn-primary sidebar-btn" %>
+
+              <%= link_to "Share Feed",
+                          feed_share_manager_path,
+                          method: :get,
+                          class: "btn btn-primary sidebar-btn" %>
+
+              <%= link_to "Feeds Shared With Me",
+                          shared_user_feeds_path,
+                          method: :get,
+                          class: "btn btn-primary sidebar-btn" %>
+
+              <%= link_to "Manage Tags",
+                          tags_path,
+                          method: :get,
+                          class: "btn btn-primary sidebar-btn" %>
+
+              <%= link_to "User Account",
+                          edit_account_path,
+                          class: "btn btn-primary sidebar-btn" %>
+            </nav>
+          </div>
+        </aside>
+
+        <!-- Main content area -->
+        <div class="main-shell">
+          <header class="global-header">
+            <div class="header-inner">
+              <!-- Mobile menu open button -->
+              <label for="sidebar-toggle"
+                     class="sidebar-toggle-button"
+                     aria-label="Open menu">
+                ☰
+              </label>
+
+              <%= link_to "DearMe", root_path, class: "header-logo" %>
+            </div>
+          </header>
+
+          <main class="main-content">
+              <%= yield %>
+          </main>
+        </div>
+      </div>
+    <% end %>
   </body>
 </html>

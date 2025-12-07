@@ -1,10 +1,393 @@
 /*
  * This is a manifest file that'll be compiled into application.css.
- *
- * With Propshaft, assets are served efficiently without preprocessing steps. You can still include
- * application-wide styles in this file, but keep in mind that CSS precedence will follow the standard
- * cascading order, meaning styles declared later in the document or manifest will override earlier ones,
- * depending on specificity.
- *
- * Consider organizing styles into separate files for maintainability.
+ * Keep shared, app-wide styles here. Specific component styles live
+ * alongside their views when possible.
  */
+
+/* ------------------------------------
+   Base reset
+------------------------------------ */
+
+/* Ensure sizing includes borders/padding for all elements */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+/* Remove default page margin/padding */
+html,
+body {
+  margin: 0;
+  padding: 0;
+}
+
+/* Make images shrink to their container width */
+img {
+  max-width: 100%;
+  display: block;
+}
+
+/* ------------------------------------
+   Typography & links
+------------------------------------ */
+
+/* Base link color and hover transition */
+a {
+  color: #9f5f32;
+  text-decoration: none;
+  transition: color 0.15s ease, opacity 0.15s ease;
+}
+
+a:hover {
+  color: #000000a1;
+}
+
+/* Shared heading styling (font, weight, color) */
+h1,
+h2,
+h3,
+h4 {
+  margin: 0 0 0.4rem;
+  font-family: "Segoe UI", "Inter", "Helvetica Neue", Arial, sans-serif;
+  font-weight: 800;
+  color: #022241;
+}
+
+h1 {
+  font-size: 1.8rem;
+}
+
+/* Section heading */
+h2 {
+  font-size: 1.2rem;
+}
+
+/* Subsection heading */
+h3 {
+  font-size: 1.4rem;
+}
+
+/* Smallest heading */
+h4 {
+  font-size: 1.15rem;
+}
+
+/* Paragraph defaults */
+p {
+  margin: 0 0 0.75rem;
+  line-height: 1.5;
+  color: #202020;
+}
+
+/* ------------------------------------
+   Header
+------------------------------------ */
+
+/* Sticky top bar background and border */
+.global-header {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: rgb(47, 82, 31);
+  backdrop-filter: blur(12px);
+}
+
+/* Constrain header content width and padding */
+.header-inner {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 0.8rem 1rem;
+  display: flex;
+  align-items: center;
+}
+
+/* Brand text styling */
+.header-logo {
+  font-size: 2rem;
+  margin: 0 0 0.4rem;
+  font-family: "Segoe UI", "Inter", "Helvetica Neue", Arial, sans-serif;
+  font-weight: 800;
+  color: #db8445;
+  text-decoration: none;
+  letter-spacing: 0.05em;
+  transition: opacity 0.2s;
+}
+
+.header-logo:hover {
+  opacity: 0.8;
+}
+
+/* ------------------------------------
+   Buttons
+------------------------------------ */
+
+/* Shared button shape, spacing, and interaction */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.25rem;
+  padding: 0.4rem 0.9rem;
+  border-radius: 999px;
+  border: 1px solid transparent;
+  font-size: 0.85rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.15s ease, border-color 0.15s ease, transform 0.08s ease, box-shadow 0.08s ease;
+  background: transparent;
+  color: #e5e7eb;
+}
+
+/* Slight press-down effect */
+.btn:active {
+  transform: translateY(1px);
+  box-shadow: none;
+}
+
+/* Primary call-to-action gradient */
+.btn-primary {
+  background: linear-gradient(135deg, #90ae64, #9bb475);
+  border-color: transparent;
+  color: rgb(33, 24, 46);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.352);
+}
+
+.btn-primary:hover {
+  filter: brightness(1.06);
+}
+
+/* Destructive or warning action */
+.btn-danger {
+  background: #d51e1e;
+  border-color: transparent;
+  color: white;
+  box-shadow: 0 8px 20px rgba(239, 68, 68, 0.4);
+}
+
+.btn-danger:hover {
+  filter: brightness(1.1);
+}
+
+/* ------------------------------------
+   Form elements
+------------------------------------ */
+
+/* Label text above inputs */
+label {
+  font-size: 0.8rem;
+  color: #000000;
+  display: block;
+  margin-bottom: 0.3rem;
+}
+
+/* Text inputs and text areas */
+input[type="text"],
+input[type="email"],
+input[type="password"],
+textarea {
+  width: 100%;
+  padding: 0.55rem 0.7rem;
+  border-radius: 0.7rem;
+  border: 1px solid rgba(0, 0, 0, 0.45);
+  background: #90ae6452;
+  color: #000000;
+  font-size: 0.9rem;
+  outline: none;
+  transition: border-color 0.14s ease, box-shadow 0.14s ease, background 0.14s ease;
+}
+
+/* Allow resizing of multi-line inputs */
+textarea {
+  resize: vertical;
+  min-height: 70px;
+}
+
+/* Highlight active text inputs */
+input[type="text"]:focus,
+input[type="email"]:focus,
+input[type="password"]:focus,
+textarea:focus {
+  border-color: #38bdf8;
+  box-shadow: 0 0 0 1px rgba(56, 189, 248, 0.6);
+  background: #90ae64ad;
+}
+
+/* ------------------------------------
+   Flash messages
+------------------------------------ */
+
+.flash {
+  padding: 0.6rem 1rem;
+  text-align: center;
+  font-size: 0.9rem;
+}
+
+.flash.notice {
+  background: #90ae64;
+  color: #ffffff;
+}
+
+.flash.alert {
+  background: #ef4444;
+  color: #ffffff;
+}
+
+/* ------------------------------------
+   Layout & Sidebar (Mobile-style ALWAYS)
+------------------------------------ */
+
+/* Wrapper for sidebar + main content */
+.app-shell {
+  display: flex;
+  position: relative;
+}
+
+/* Main content column */
+.main-shell {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Center page contents similarly to header width */
+.main-content {
+  padding: 1rem;
+}
+
+/* Any direct child of main (sections, forms, divs, etc.) will be centered */
+.main-content > * {
+  max-width: 800px;   /* same width you liked on the dashboard */
+  margin: 0 auto 1.5rem;  /* center horizontally, add space at bottom */
+}
+
+/* Hidden checkbox used to control sidebar visibility */
+.sidebar-toggle-checkbox {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* Hamburger button ALWAYS visible */
+.sidebar-toggle-button {
+  display: inline-flex;
+  margin-right: 0.75rem;
+  padding: 0.35rem 0.55rem;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  font-size: 1rem;
+  cursor: pointer;
+  color: #fefce8;
+}
+
+/* Sidebar ALWAYS behaves like mobile slide-out */
+.sidebar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 260px;
+  max-width: 80%;
+  padding: 1rem;
+  background: #20361a; /* keep your green theme */
+  color: #f9fafb;
+  transform: translateX(-100%);
+  transition: transform 0.18s ease-out;
+  z-index: 200;
+  box-shadow: 4px 0 12px rgba(0, 0, 0, 0.35);
+}
+
+.sidebar-toggle-checkbox:checked ~ .sidebar {
+  transform: translateX(0);
+}
+
+.sidebar-inner {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.sidebar-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.75rem;
+}
+
+.sidebar-title {
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #fefce8;
+}
+
+/* Close button ALWAYS visible */
+.sidebar-close-button {
+  display: inline-block;
+  cursor: pointer;
+  font-size: 1.3rem;
+  line-height: 1;
+  padding: 0.1rem 0.3rem;
+  border-radius: 999px;
+  color: #fefce8;
+}
+
+.sidebar-menu {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.sidebar-btn {
+  width: 100%;
+  justify-content: flex-start;
+  text-align: left;
+}
+
+/* ------------------------------------
+   Responsive behavior
+------------------------------------ */
+
+@media (max-width: 768px) {
+  .app-shell {
+    position: relative;
+  }
+
+  /* Sidebar becomes a slide-in panel on small screens */
+  .sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100%;
+    max-width: 80%;
+    width: 260px;
+    transform: translateX(-100%);
+    transition: transform 0.18s ease-out;
+    z-index: 200;
+    box-shadow: 4px 0 12px rgba(0, 0, 0, 0.35);
+  }
+
+  /* When checkbox is checked, show the sidebar */
+  .sidebar-toggle-checkbox:checked ~ .sidebar {
+    transform: translateX(0);
+  }
+
+  /* Show hamburger button in header */
+  .sidebar-toggle-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  /* Show close button inside the sidebar */
+  .sidebar-close-button {
+    display: inline-block;
+  }
+}
+
+.page-container {
+  max-width: 900px;   /* or whatever matches your dashboard layout */
+  margin: 0 auto;
+  padding: 1rem;
+}
