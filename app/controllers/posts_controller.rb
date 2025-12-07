@@ -111,6 +111,7 @@ class PostsController < ApplicationController
   def index
     @user = current_user
     @user_tags = @user.tags.order(:title)
+    @show_status_filter = true
     @posts = filter_posts_of(@user)
 
     # The filters of the page should send the filter requests to
