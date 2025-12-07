@@ -97,6 +97,7 @@ class FeedShareController < ApplicationController
     # user to current user
     @user = user
     @user_tags = @user.tags.order(:title)
+    @show_status_filter = false
     @posts = filter_posts_of(user)
 
     # The filters of the page should send the filter requests to
