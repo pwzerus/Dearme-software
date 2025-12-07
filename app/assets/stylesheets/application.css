@@ -1,10 +1,212 @@
 /*
  * This is a manifest file that'll be compiled into application.css.
- *
- * With Propshaft, assets are served efficiently without preprocessing steps. You can still include
- * application-wide styles in this file, but keep in mind that CSS precedence will follow the standard
- * cascading order, meaning styles declared later in the document or manifest will override earlier ones,
- * depending on specificity.
- *
- * Consider organizing styles into separate files for maintainability.
+ * Keep shared, app-wide styles here. Specific component styles live
+ * alongside their views when possible.
  */
+
+/* ------------------------------------
+   Base reset
+------------------------------------ */
+
+/* Ensure sizing includes borders/padding for all elements */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+/* Remove default page margin/padding */
+html,
+body {
+  margin: 0;
+  padding: 0;
+}
+
+/* Make images shrink to their container width */
+img {
+  max-width: 100%;
+  display: block;
+}
+
+/* ------------------------------------
+   Typography & links
+------------------------------------ */
+
+/* Base link color and hover transition */
+a {
+  color: #db8445;
+  text-decoration: none;
+  transition: color 0.15s ease, opacity 0.15s ease;
+}
+
+a:hover {
+  color: #db8445a1;
+}
+
+/* Shared heading styling (font, weight, color) */
+h1,
+h2,
+h3,
+h4 {
+  margin: 0 0 0.4rem;
+  font-family: "Segoe UI", "Inter", "Helvetica Neue", Arial, sans-serif;
+  font-weight: 800;
+  color: #022241;
+}
+
+h1 {
+  font-size: 2.2rem;
+}
+
+/* Section heading */
+h2 {
+  font-size: 1.8rem;
+}
+
+/* Subsection heading */
+h3 {
+  font-size: 1.4rem;
+}
+
+/* Smallest heading */
+h4 {
+  font-size: 1.15rem;
+}
+
+/* Paragraph defaults */
+p {
+  margin: 0 0 0.75rem;
+  line-height: 1.5;
+  color: #202020;
+}
+
+/* ------------------------------------
+   Header
+------------------------------------ */
+
+/* Sticky top bar background and border */
+.global-header {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: rgb(47, 82, 31);
+  backdrop-filter: blur(12px);
+}
+
+/* Constrain header content width and padding */
+.header-inner {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 0.8rem 1rem;
+}
+
+/* Brand text styling */
+.header-logo {
+  font-size: 2rem;
+  margin: 0 0 0.4rem;
+  font-family: "Segoe UI", "Inter", "Helvetica Neue", Arial, sans-serif;
+  font-weight: 800;
+  color: #db8445;
+  text-decoration: none;
+  letter-spacing: 0.05em;
+  transition: opacity 0.2s;
+}
+
+.header-logo:hover {
+  opacity: 0.8;
+}
+
+/* ------------------------------------
+   Buttons
+------------------------------------ */
+
+/* Shared button shape, spacing, and interaction */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.25rem;
+  padding: 0.4rem 0.9rem;
+  border-radius: 999px;
+  border: 1px solid transparent;
+  font-size: 0.85rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.15s ease, border-color 0.15s ease, transform 0.08s ease, box-shadow 0.08s ease;
+  background: transparent;
+  color: #e5e7eb;
+}
+
+/* Slight press-down effect */
+.btn:active {
+  transform: translateY(1px);
+  box-shadow: none;
+}
+
+/* Primary call-to-action gradient */
+.btn-primary {
+  background: linear-gradient(135deg, #90ae64, #9bb475);
+  border-color: transparent;
+  color: white;
+  box-shadow: 0 8px 20px rgba(255, 255, 255, 0.352);
+}
+
+.btn-primary:hover {
+  filter: brightness(1.06);
+}
+
+/* Destructive or warning action */
+.btn-danger {
+  background: #ef4444;
+  border-color: transparent;
+  color: white;
+  box-shadow: 0 8px 20px rgba(239, 68, 68, 0.4);
+}
+
+.btn-danger:hover {
+  filter: brightness(1.1);
+}
+
+/* ------------------------------------
+   Form elements
+------------------------------------ */
+
+/* Label text above inputs */
+label {
+  font-size: 0.8rem;
+  color: #000000;
+  display: block;
+  margin-bottom: 0.3rem;
+}
+
+/* Text inputs and text areas */
+input[type="text"],
+input[type="email"],
+input[type="password"],
+textarea {
+  width: 100%;
+  padding: 0.55rem 0.7rem;
+  border-radius: 0.7rem;
+  border: 1px solid rgba(0, 0, 0, 0.45);
+  background: #90ae6452;
+  color: #000000;
+  font-size: 0.9rem;
+  outline: none;
+  transition: border-color 0.14s ease, box-shadow 0.14s ease, background 0.14s ease;
+}
+
+/* Allow resizing of multi-line inputs */
+textarea {
+  resize: vertical;
+  min-height: 70px;
+}
+
+/* Highlight active text inputs */
+input[type="text"]:focus,
+input[type="email"]:focus,
+input[type="password"]:focus,
+textarea:focus {
+  border-color: #38bdf8;
+  box-shadow: 0 0 0 1px rgba(56, 189, 248, 0.6);
+  background: #90ae64ad;
+}
