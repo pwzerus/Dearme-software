@@ -26,7 +26,7 @@ RSpec.describe PostFilteringControllerConcern, type: :controller do
   end
 
   describe "#filter_posts_of" do
-    it "excludes archived posts and orders newest first when no filters provided" do
+    it "defaults to posted (non-archived) and orders newest first when no status provided" do
       older = build_post(title: "Old", created_at: Time.zone.parse("2024-05-01"))
       newer = build_post(title: "New", created_at: Time.zone.parse("2024-05-02"))
       archived = build_post(title: "Archived", created_at: Time.zone.parse("2024-05-03"), archived: true)
@@ -35,6 +35,16 @@ RSpec.describe PostFilteringControllerConcern, type: :controller do
 
       expect(result).to eq([ newer, older ])
       expect(result).not_to include(archived)
+    end
+
+    it "returns archived posts when status is archived" do
+      posted = build_post(title: "Posted", created_at: Time.zone.parse("2024-05-01"))
+      archived = build_post(title: "Archived", created_at: Time.zone.parse("2024-05-02"), archived: true)
+
+      result = filter_with(status: "archived")
+
+      expect(result).to match_array([ archived ])
+      expect(result).not_to include(posted)
     end
 
     it "returns posts matching ANY selected tags (OR) and de-duplicates when a post has multiple tags" do

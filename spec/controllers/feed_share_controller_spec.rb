@@ -125,6 +125,7 @@ RSpec.describe FeedShareController, type: :controller do
 
       expect(controller.instance_variable_get(:@user)).to eq(other_user)
       expect(controller.instance_variable_get(:@filter_url)).to eq(shared_user_feed_path(other_user))
+      expect(controller.instance_variable_get(:@show_status_filter)).to be false
       expect(response).to have_http_status(:ok)
     end
   end

@@ -13,7 +13,14 @@ module PostFilteringControllerConcern
     # controllers (based on design), it can use params global
     # variable as one would normally in a controller.
     def filter_posts_of(user)
-      posts = user.posts.where(archived: false).includes(:tags)
+      posts = user.posts.includes(:tags)
+
+      # Status filter: default to posted (non-archived) unless archived explicitly requested
+      posts = if params[:status].to_s == "archived"
+                posts.where(archived: true)
+              else
+                posts.where(archived: false)
+              end
 
       tag_ids = selected_tag_ids
       if tag_ids.any?
