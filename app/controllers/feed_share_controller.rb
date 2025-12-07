@@ -14,8 +14,6 @@ class FeedShareController < ApplicationController
     # is the viewee
     @viewers_view_current_user =
       UserViewUser.active.where(viewee: current_user)
-
-    puts @viewers_view_current_user
   rescue => e
     msg = "Feed share failure: #{e.message}"
     Rails.logger.error msg
