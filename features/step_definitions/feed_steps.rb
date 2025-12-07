@@ -8,6 +8,7 @@
 # without the Given("I am signed in with Google") step
 
 SHARE_FEED_LINK_TEXT = "SHARE FEED LINK"
+REVOKE_ACCESS_BTN_LABEL = "Revoke Access"
 
 Then('I should see my feed share link') do
   expect(page).to have_link(SHARE_FEED_LINK_TEXT)
@@ -34,6 +35,10 @@ end
 
 When('I visit the feed share manager page') do
   visit feed_share_manager_path
+end
+
+Then('I should be on the feed share manager page') do
+  expect(page).to have_current_path(feed_share_manager_path)
 end
 
 When('I visit the feed share link of user {string}') do |email|
@@ -89,6 +94,17 @@ Given('I have access to the feed of user {string}') do |email|
   end
 end
 
+Given('user {string} has view access to my feed') do |email|
+  viewer = User.find_by!(email: email)
+  current_user = User.find_by!(email: TEST_USER_EMAIL)
+
+  UserViewUser.create!(
+          viewer: viewer,
+          viewee: current_user,
+          expires_at: Time.current + FeedShareController::FEED_SHARE_TTL
+          )
+end
+
 When('I visit the feed page for user {string}') do |email|
   if email == TEST_USER_EMAIL
     visit posts_path
@@ -101,4 +117,12 @@ end
 When('I click to view post {string} from the feed') do |title|
   li = find('li', text: title)
   li.click_link('View')
+end
+
+When('I click to revoke feed access of user {string}') do |email|
+  user = User.find_by!(email: email)
+  row = find('tr', text: email)
+  within(row) do
+    click_link_or_button REVOKE_ACCESS_BTN_LABEL
+  end
 end

@@ -7,9 +7,9 @@
 <p> Link valid till: <%= current_user.feed_share_token.expires_at %></p>
 
 
-<h3>Feed shared with: </h3>
+<h3>Feed can be accessed by: </h3>
 <% if @viewers_view_current_user.blank? %>
-  <p>No user is accessing your shared feed</p>
+  <p>No user is accessing your feed</p>
 <% else %>
   <table border = '1'>
     <thead>
