@@ -27,7 +27,9 @@
           <td><%= uvu.expires_at %></td>
           <td>
             <%= button_to "Revoke Access",
-                          revoke_shared_feed_access_path(uvu.viewer),
+                          stop_feed_share_path(
+                                  viewee_id: uvu.viewee.id, # current_user
+                                  viewer_id: uvu.viewer.id),
                           method: :delete,
                           class: "btn btn-danger",
                           form: {

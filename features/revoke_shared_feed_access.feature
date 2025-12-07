@@ -31,5 +31,5 @@ Scenario: User revokes feed access of another user
   When I visit the feed share manager page
   And I click to revoke feed access of user "altair@assasin.com"
   Then I should be on the feed share manager page
-  And I should see "Revoked feed access successfully !"
+  And I should see "Stopped feed share successfully !"
   And I should not see "altair@assasin.com"

@@ -44,9 +44,15 @@ Rails.application.routes.draw do
       to: "feed_share#shared_user_feed",
       as: :shared_user_feed
 
-  # Allows current user to revoke access to their feed which
-  # was shared earlier with another user (:user_id)
-  delete "/revoke_shared_feed_access/:user_id",
-         to: "feed_share#revoke_shared_feed_access",
-         as: :revoke_shared_feed_access
+  # When current user calls this as the viewee, then
+  # the intent is to revoke access of the viewer to current
+  # user's shared feed.
+  #
+  # When current user calls this as a viewer, then the
+  # intent is to ignore shared feed of the viewee as the
+  # current user no longer wishes to view viewee's feed
+  # in the list of feeds shared with the current user.
+  delete "/stop_feed_share/:viewer_id/:viewee_id",
+         to: "feed_share#stop_feed_share",
+         as: :stop_feed_share
 end

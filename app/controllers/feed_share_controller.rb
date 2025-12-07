@@ -122,31 +122,55 @@ class FeedShareController < ApplicationController
     redirect_to dashboard_path
   end
 
-  # Revoke access of the current user's feed shared with the
-  # user :user_id
+  # DELETE /stop_feed_share/:viewer_id/:viewee_id
   #
-  # DELETE /revoke_shared_access/:user_id
-  def revoke_shared_feed_access
-    user = User.find(params[:user_id])
+  # When current user calls this as the viewee, then
+  # the intent is to revoke access of the viewer to current
+  # user's shared feed.
+  #
+  # When current user calls this as a viewer, then the
+  # intent is to ignore shared feed of the viewee as the
+  # current user no longer wishes to view viewee's feed
+  # in the list of feeds shared with the current user.
+  def stop_feed_share
+    viewer = User.find(params[:viewer_id])
+    viewee = User.find(params[:viewee_id])
 
-    # Find an active user view user where current user is viewed
-    # by another user
+    unless current_user == viewer ||
+           current_user == viewee
+      # Someone who is not a viewer nor a viewee cannot
+      # stop the feed sharing between viewer and viewee
+      raise "Current user neither viewer nor viewee in the feed share !"
+    end
+
     uvu = UserViewUser.find_active(
-            viewee: current_user,
-            viewer: user
+            viewer: viewer,
+            viewee: viewee
             )
     if uvu.nil?
-      raise "User doesn't have access to your shared feed"
+      raise "No active feed share occuring between the requested viewer and" \
+            "viewee !"
     end
 
     # Destroying the record so that our system no longer considers
-    # that user to have access to shared feed.
+    # the feed share
     uvu.destroy!
 
     Rails.logger.info
-      "User #{current_user.id} revoked feed access of #{user.id}"
-    flash[:notice] = "Revoked feed access successfully !"
-    redirect_to feed_share_manager_path
+      "Stopped feed share between viewer #{viewer.id} and viewee #{viewee.id}"
+    flash[:notice] = "Stopped feed share successfully !"
+
+    if current_user == viewer
+      # Direct the current user to the path where he can view what
+      # other user feeds can he still view after we've stopped sharing
+      # viewee's feed
+      redirect_to shared_user_feeds_path
+    else
+      # current user is the viewee, direct him to the page where
+      # he can view which other viewers can still access his feed
+      # after stopping feed share with the viewer.
+      redirect_to feed_share_manager_path
+    end
   rescue => e
     msg = "Failure while revoking shared feed access: #{e.message}"
     Rails.logger.error msg
