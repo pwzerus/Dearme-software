@@ -8,28 +8,13 @@
 
 <% filters_open = params[:start_date].present? ||
                   params[:end_date].present? ||
-                  Array(params[:tags]).reject(&:blank?).any? ||
-                  (params[:status].present? && @show_status_filter) %>
+                  Array(params[:tags]).reject(&:blank?).any? %>
 
 <h2>Posts of <%= @user.email %></h2>
 
 <details <%= "open" if filters_open %>>
   <summary data-test="feed-filter-toggle">Filters</summary>
   <%= form_with url: @filter_url, method: :get, data: { test: "feed-filter-form" } do %>
-    <% if @show_status_filter %>
-      <fieldset>
-        <legend>Status</legend>
-        <div>
-          <%= radio_button_tag :status, "posted", params[:status].to_s != "archived", id: "status_posted" %>
-          <%= label_tag "status_posted", "Posted" %>
-        </div>
-        <div>
-          <%= radio_button_tag :status, "archived", params[:status].to_s == "archived", id: "status_archived" %>
-          <%= label_tag "status_archived", "Archived" %>
-        </div>
-      </fieldset>
-    <% end %>
-
     <div>
       <label for="start_date">Start date</label>
       <%= date_field_tag :start_date, params[:start_date], id: "start_date" %>
