@@ -37,6 +37,16 @@ RSpec.describe PostFilteringControllerConcern, type: :controller do
       expect(result).not_to include(archived)
     end
 
+    it "returns only archived posts when status is archived" do
+      posted = build_post(title: "Posted", created_at: Time.zone.parse("2024-05-01"))
+      archived = build_post(title: "Archived", created_at: Time.zone.parse("2024-05-02"), archived: true)
+
+      result = filter_with(status: "archived")
+
+      expect(result).to match_array([ archived ])
+      expect(result).not_to include(posted)
+    end
+
     it "returns posts matching ANY selected tags (OR) and de-duplicates when a post has multiple tags" do
       travel_only = build_post(title: "Travel Only", created_at: Time.zone.parse("2024-05-01"), tags: [ tag_a ])
       work_only = build_post(title: "Work Only", created_at: Time.zone.parse("2024-05-02"), tags: [ tag_b ])
