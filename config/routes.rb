@@ -43,4 +43,10 @@ Rails.application.routes.draw do
   get "/shared_user_feed/:user_id",
       to: "feed_share#shared_user_feed",
       as: :shared_user_feed
+
+  # Allows current user to revoke access to their feed which
+  # was shared earlier with another user (:user_id)
+  delete "/revoke_shared_feed_access/:user_id",
+         to: "feed_share#revoke_shared_feed_access",
+         as: :revoke_shared_feed_access
 end

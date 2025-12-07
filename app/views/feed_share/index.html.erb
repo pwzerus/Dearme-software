@@ -5,3 +5,39 @@
   <%= link_to "SHARE FEED LINK", @share_user_feed_url%>
 </p>
 <p> Link valid till: <%= current_user.feed_share_token.expires_at %></p>
+
+
+<h3>Feed shared with: </h3>
+<% if @viewers_view_current_user.blank? %>
+  <p>No user is accessing your shared feed</p>
+<% else %>
+  <table border = '1'>
+    <thead>
+      <th>S.No.</th>
+      <th>Viewer Email</th>
+      <th>Access valid till</th>
+    </thead>
+
+    <tbody>
+      <!-- uvu short for user views user -->
+      <% @viewers_view_current_user.each_with_index do |uvu, index| %>
+        <tr>
+          <td><%= index + 1 %></td>
+          <td><%= uvu.viewer.email %></td>
+          <td><%= uvu.expires_at %></td>
+          <td>
+            <%= button_to "Revoke Access",
+                          revoke_shared_feed_access_path(uvu.viewer),
+                          method: :delete,
+                          class: "btn btn-danger",
+                          form: {
+                            data: {
+                              turbo_confirm: "Sure you want to revoke access ?"
+                            }
+                          } %>
+          </td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+<% end %>

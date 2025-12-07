@@ -9,6 +9,13 @@ class FeedShareController < ApplicationController
   def index
     token = current_user.feed_share_token.token
     @share_user_feed_url = share_user_feed_url(token: token)
+
+    # Which UserViewUser records are active where current user
+    # is the viewee
+    @viewers_view_current_user =
+      UserViewUser.active.where(viewee: current_user)
+
+    puts @viewers_view_current_user
   rescue => e
     msg = "Feed share failure: #{e.message}"
     Rails.logger.error msg
@@ -84,13 +91,15 @@ class FeedShareController < ApplicationController
   def shared_user_feed
     user = User.find(params[:user_id])
 
-    uvu = UserViewUser.find_by(viewer: current_user, viewee: user)
+    # Find an active user view user where the current user
+    # views another user.
+    uvu = UserViewUser.find_active(
+            viewer: current_user,
+            viewee: user
+            )
     if uvu.nil?
-      raise "User's feed hasn't been shared with you, can't access it"
-    end
-
-    if uvu.expired?
-      raise "User feed shared with you has expired"
+      raise "You cannot access that user's feed, either it was" \
+            "never shared or the share has expired !"
     end
 
     # Render the posts index page showing posts of the
@@ -107,6 +116,39 @@ class FeedShareController < ApplicationController
     render "posts/index"
   rescue => e
     msg = "Failure while displaying user feed: #{e.message}"
+    Rails.logger.error msg
+    flash[:error] = msg
+
+    redirect_to dashboard_path
+  end
+
+  # Revoke access of the current user's feed shared with the
+  # user :user_id
+  #
+  # DELETE /revoke_shared_access/:user_id
+  def revoke_shared_feed_access
+    user = User.find(params[:user_id])
+
+    # Find an active user view user where current user is viewed
+    # by another user
+    uvu = UserViewUser.find_active(
+            viewee: current_user,
+            viewer: user
+            )
+    if uvu.nil?
+      raise "User doesn't have access to your shared feed"
+    end
+
+    # Destroying the record so that our system no longer considers
+    # that user to have access to shared feed.
+    uvu.destroy!
+
+    Rails.logger.info
+      "User #{current_user.id} revoked feed access of #{user.id}"
+    flash[:notice] = "Revoked feed access successfully !"
+    redirect_to feed_share_manager_path
+  rescue => e
+    msg = "Failure while revoking shared feed access: #{e.message}"
     Rails.logger.error msg
     flash[:error] = msg
 
