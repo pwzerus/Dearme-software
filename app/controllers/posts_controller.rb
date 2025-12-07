@@ -127,10 +127,17 @@ class PostsController < ApplicationController
     #   "create a copy of my created post".
     # - If current_user is only a viewer,
     #   "create a copy of some other user's post".
-    #
-    # We assume that if you can reach this action, you are allowed
-    # to view the post.
     def duplicate
+      unless @post.creator == current_user ||
+            @post.mentioned_users.include?(current_user) ||
+            UserViewUser.can_user_view_another?(current_user,
+                                                @post.creator)
+        Rails.logger.info "Failed to duplicate post: user #{current_user.id} not allowed to view post #{@post.id}"
+        flash[:alert] = "You do not have access to copy this post"
+        redirect_to dashboard_path
+        return
+      end
+
       copied_post = @post.duplicate_for(current_user)
 
       if current_user == @post.creator

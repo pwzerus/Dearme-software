@@ -199,3 +199,9 @@ When('I attempt to copy a post that does not exist') do
   # Use an obviously invalid id that set_post! will not find
   page.driver.submit :post, duplicate_post_path(-1), {}
 end
+
+When('I attempt to copy the post titled {string} without permission') do |title|
+  post = Post.find_by!(title: title)
+  # Directly POST to the duplicate route, without going through show
+  page.driver.submit :post, duplicate_post_path(post), {}
+end

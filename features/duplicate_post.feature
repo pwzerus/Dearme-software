@@ -39,3 +39,16 @@ Feature: Post duplication
     When I attempt to copy a post that does not exist
     Then I should be on the dashboard page
     And I should see "Failed to find post"
+
+  Scenario: User cannot copy another user's post without permission
+    And a user exists with:
+      | email      | other-user@example.com |
+      | first_name | Other                  |
+      | last_name  | User                   |
+    And a post exists with:
+      | title         | Secret Trip             |
+      | creator_email | other-user@example.com |
+    When I attempt to copy the post titled "Secret Trip" without permission
+    Then I should be on the dashboard page
+    And I should see "You do not have access to copy this post"
+
