@@ -9,8 +9,34 @@ def validate_page_shows_media_file(filename, file_type)
     expect(page).to have_css("img" +
                              "[src*='#{filename}']" +
                              "[alt='#{filename}']")
+  when MediaFile::Type::VIDEO
+    expect(page).to have_css("video" +
+                             "[src*='#{filename}']")
   else
     raise "Trying to see unknown file type"
+  end
+end
+
+# media_files_str: a string containing comma separated
+# media file names
+def attach_media_files_to_post(post, media_files_str)
+  if media_files_str.present?
+    # arr.map(&:strip) is equivalent to
+    # arr.map { |elem| elem.strip }
+    media_files_str.split(",").map(&:strip).each do |filename|
+      filepath = get_test_file_path_from_name(filename)
+      content_type = Marcel::MimeType.for(filepath)
+      media_file_type = MediaFile.type_from_content_type(content_type)
+
+      mf = post.media_files.new(file_type: media_file_type)
+
+      mf.file.attach(
+              io: File.open(filepath),
+              filename: filename,
+              content_type: content_type
+              )
+      mf.save!
+    end
   end
 end
 
@@ -31,23 +57,11 @@ def create_post_helper(attrs)
     p.update_column(:created_at, Time.zone.parse(attrs["created_at"]))
   end
 
-  # A string consisting of comma separated file names
-  images_str = attrs["images"]
-  if images_str.present?
-    # arr.map(&:strip) is equivalent to
-    # arr.map { |elem| elem.strip }
-    images_str.split(",").map(&:strip).each do |filename|
-      mf = p.media_files.new(file_type: MediaFile::Type::IMAGE)
+  # Associate images
+  attach_media_files_to_post(p, attrs["images"])
 
-      filepath = get_test_file_path_from_name(filename)
-      mf.file.attach(
-              io: File.open(filepath),
-              filename: filename,
-              content_type: Marcel::MimeType.for(filepath)
-              )
-      mf.save!
-    end
-  end
+  # Associate videos
+  attach_media_files_to_post(p, attrs["videos"])
 
   # Associate tags if provided as comma-separated titles
   tags_str = attrs["tags"]
@@ -116,6 +130,10 @@ end
 
 Then('I should see the {string} image') do |filename|
   validate_page_shows_media_file(filename, MediaFile::Type::IMAGE)
+end
+
+Then('I should see the {string} video') do |filename|
+  validate_page_shows_media_file(filename, MediaFile::Type::VIDEO)
 end
 
 Then('I should be on the edit post page for {string}') do |title|
