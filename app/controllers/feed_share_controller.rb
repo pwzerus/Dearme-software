@@ -59,8 +59,9 @@ class FeedShareController < ApplicationController
 
     # Redirect to the view that shows a user all the feeds
     # shared with them
-    Rails.logger.info
+    Rails.logger.info(
       "User #{user.id} feed shared with #{current_user.id} successfully"
+      )
     flash[:notice] = "Shared feed access successful"
     redirect_to shared_user_feeds_path
   rescue => e
@@ -156,8 +157,9 @@ class FeedShareController < ApplicationController
     # the feed share
     uvu.destroy!
 
-    Rails.logger.info
+    Rails.logger.info(
       "Stopped feed share between viewer #{viewer.id} and viewee #{viewee.id}"
+      )
     flash[:notice] = "Stopped feed share successfully !"
 
     if current_user == viewer
