@@ -61,7 +61,7 @@ RSpec.describe Post, type: :model do
     expect(t.archived).to be true
   end
 
-    describe "#duplicate_for" do
+  describe "#duplicate_for" do
     let(:creator) {
       User.create!(
         email: "creator@example.com",
@@ -143,7 +143,7 @@ RSpec.describe Post, type: :model do
       end
     end
 
-    it "copies media files and reuses underlying blobs" do
+    it "copies media files and creates independent blobs" do
       copy = original_post.duplicate_for(other_user)
 
       expect(copy.media_files.count).to eq(original_post.media_files.count)
@@ -151,8 +151,10 @@ RSpec.describe Post, type: :model do
       original_blob = original_post.media_files.first.file.blob
       copied_blob   = copy.media_files.first.file.blob
 
-      # should reuse the same blob, not upload a new file
-      expect(copied_blob.id).to eq(original_blob.id)
+      # should create a new blob, but with the same file content
+      expect(copied_blob.id).not_to eq(original_blob.id)
+      expect(copied_blob.filename).to eq(original_blob.filename)
+      expect(copied_blob.byte_size).to eq(original_blob.byte_size)
     end
   end
 end

@@ -1,3 +1,5 @@
+require "stringio"
+
 class Post < ApplicationRecord
   belongs_to :creator, class_name: "User"
 
@@ -49,19 +51,9 @@ class Post < ApplicationRecord
         Tag.find_or_create_by!(title: tag.title, creator: user)
       end
 
-      # Copy media files and reuse the same blobs
+      # Copy media files and copy the underlying attachments
       media_files.find_each do |media|
-        duplicated_media = copy.media_files.build(
-          file_type:   media.file_type,
-          description: media.description
-        )
-
-        if media.file.attached?
-          # Reuse the same blob so storage is not duplicated
-          duplicated_media.file.attach(media.file.blob)
-        end
-
-        duplicated_media.save!
+        media.duplicate_for(copy)
       end
 
       copy

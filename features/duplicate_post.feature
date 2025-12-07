@@ -27,7 +27,7 @@ Feature: Post duplication
     And a post exists with:
       | title         | Road Trip              |
       | creator_email | other-user@example.com |
-    And I can view posts created by "other-user@example.com"
+    And I have feed access to posts created by "other-user@example.com"
     When I visit the view post page for "Road Trip"
     And I click "Copy to my posts"
     Then a post should exist with:

@@ -184,7 +184,7 @@ Then('a post should exist with:') do |table|
   end
 end
 
-Given('I can view posts created by {string}') do |creator_email|
+Given('I have feed access to posts created by {string}') do |creator_email|
   viewer = User.find_by!(email: TEST_USER_EMAIL)
   creator = User.find_by!(email: creator_email)
 

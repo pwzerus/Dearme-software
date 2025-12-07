@@ -14,10 +14,10 @@
                     turbo_confirm: "Sure you want to delete ?"
                   }
                 } %>
-  <%= button_to "Duplicate",
+  <%= button_to (@post.creator == current_user ? "Duplicate" : "Copy to my posts"),
                 duplicate_post_path(@post),
                 method: :post,
-                class: "btn btn-secondary" %>
+                class: "btn btn-primary" %>
   <% if @post.archived %>
     <!-- allow the user to post the post -->
     <%= form_with model: @post, local: true do |f| %>
@@ -32,13 +32,11 @@
     <% end %>
   <% end %>
 
-<!-- Post is not from the creator -->
 <% else %>
-    <%= button_to "Copy to my posts",
-                  duplicate_post_path(@post),
-                  method: :post,
-                  class: "btn btn-secondary" %>
-
+  <%= button_to "Copy to my posts",
+                duplicate_post_path(@post),
+                method: :post,
+                class: "btn btn-primary" %>
 <% end %>
 
 <p>Created by: <%= @post.creator.email %></p>

@@ -38,4 +38,20 @@ class MediaFile < ApplicationRecord
       raise ArgumentError, "Unknown content type: #{content_type}"
     end
   end
+
+  def duplicate_for(new_parent)
+    duplicated_media = dup
+    duplicated_media.parent = new_parent
+
+    if file.attached?
+      duplicated_media.file.attach(
+        io: StringIO.new(file.download),
+        filename: file.filename.to_s,
+        content_type: file.content_type
+      )
+    end
+
+    duplicated_media.save!
+    duplicated_media
+  end
 end

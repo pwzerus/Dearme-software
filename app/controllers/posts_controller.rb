@@ -29,10 +29,7 @@ class PostsController < ApplicationController
   end
 
   def show
-    unless @post.creator == current_user ||
-           @post.mentioned_users.include?(current_user) ||
-           UserViewUser.can_user_view_another?(current_user,
-                                               @post.creator)
+    unless can_current_user_view_post?(@post)
       raise "You do not have access to view the post"
     end
   rescue => e
@@ -129,10 +126,7 @@ class PostsController < ApplicationController
     # - If current_user is only a viewer,
     #   "create a copy of some other user's post".
     def duplicate
-      unless @post.creator == current_user ||
-            @post.mentioned_users.include?(current_user) ||
-            UserViewUser.can_user_view_another?(current_user,
-                                                @post.creator)
+      unless can_current_user_view_post?(@post)
         Rails.logger.info "Failed to duplicate post: user #{current_user.id} not allowed to view post #{@post.id}"
         flash[:alert] = "You do not have access to copy this post"
         redirect_to dashboard_path
@@ -155,6 +149,12 @@ class PostsController < ApplicationController
     end
 
   private
+    def can_current_user_view_post?(post)
+      post.creator == current_user ||
+      post.mentioned_users.include?(current_user) ||
+      UserViewUser.can_user_view_another?(current_user, post.creator)
+    end
+
     # Get the error string explaining why a post related
     # activity failed on the p object
     def post_error_str(p)
