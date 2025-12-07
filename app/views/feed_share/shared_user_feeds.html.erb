@@ -19,7 +19,11 @@
           <td><%= uvu.updated_at %></td>
           <td><%= uvu.expires_at %></td>
 
-          <td><%= link_to "View", shared_user_feed_path(uvu.viewee) %></td>
+          <td>
+            <%= link_to "View",
+                        shared_user_feed_path(uvu.viewee),
+                        class: "btn btn-primary" %>
+          </td>
           <td><%= button_to "Ignore",
                           stop_feed_share_path(
                                   viewer_id: uvu.viewer.id, # current_user
