@@ -2,6 +2,8 @@
 <% case  media_file.file_type %>
 <% when MediaFile::Type::IMAGE %>
   <%= image_tag media_file.file, alt: media_file.file.filename %>
+<% when MediaFile::Type::VIDEO %>
+  <%= video_tag media_file.file, controls: true %>
 <% else %>
   <%= link_to media_file.file.filename, media_file.file %>
 <% end %>

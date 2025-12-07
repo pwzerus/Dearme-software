@@ -22,8 +22,8 @@ body {
   padding: 0;
 }
 
-/* Make images shrink to their container width */
-img {
+/* Make images, videos shrink to their container width */
+img, video {
   max-width: 100%;
   display: block;
 }

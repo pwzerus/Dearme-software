@@ -156,11 +156,12 @@ RSpec.describe MediaFile, type: :model do
     end
 
     context "unknown content type" do
-      let(:bad_content_type) { "are you kidding ?" }
-      it "should raise argument error" do
-        expect {
-            MediaFile.type_from_content_type(bad_content_type)
-        }.to raise_error(ArgumentError)
+      let(:content_types) {
+          [ "are you kidding ?" ]
+      }
+
+      it "should return unknown media file type" do
+        type_checking_helper(content_types, MediaFile::Type::UNKNOWN)
       end
     end
   end
