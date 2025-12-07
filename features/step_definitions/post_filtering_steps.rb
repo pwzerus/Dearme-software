@@ -31,3 +31,17 @@ Then('the tag filter {string} should be checked') do |tag_title|
     expect(page).to have_checked_field(tag_title)
   end
 end
+
+When('I select the status filter {string}') do |status|
+  within("form[data-test='feed-filter-form']") do
+    choose(status.capitalize)
+  end
+end
+
+Then('I should not see a status filter') do
+  within("form[data-test='feed-filter-form']") do
+    expect(page).not_to have_content("Status")
+    expect(page).not_to have_field("status_posted")
+    expect(page).not_to have_field("status_archived")
+  end
+end
