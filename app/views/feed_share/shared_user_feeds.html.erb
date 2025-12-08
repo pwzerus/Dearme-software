@@ -19,8 +19,23 @@
           <td><%= uvu.updated_at %></td>
           <td><%= uvu.expires_at %></td>
 
-          <td><%= link_to "View", shared_user_feed_path(uvu.viewee) %></td>
-          <!-- TODO: can add ignore here to ignore the shared feed -->
+          <td>
+            <%= link_to "View",
+                        shared_user_feed_path(uvu.viewee),
+                        class: "btn btn-primary" %>
+          </td>
+          <td><%= button_to "Ignore",
+                          stop_feed_share_path(
+                                  viewer_id: uvu.viewer.id, # current_user
+                                  viewee_id: uvu.viewee.id),
+                          method: :delete,
+                          class: "btn btn-danger",
+                          form: {
+                            data: {
+                              turbo_confirm:
+                                "Sure you want to ignore the feed ?"
+                            }
+                          } %></td>
         </tr>
       <% end %>
     </tbody>

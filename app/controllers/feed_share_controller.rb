@@ -9,6 +9,11 @@ class FeedShareController < ApplicationController
   def index
     token = current_user.feed_share_token.token
     @share_user_feed_url = share_user_feed_url(token: token)
+
+    # Which UserViewUser records are active where current user
+    # is the viewee
+    @viewers_view_current_user =
+      UserViewUser.active.where(viewee: current_user)
   rescue => e
     msg = "Feed share failure: #{e.message}"
     Rails.logger.error msg
@@ -52,8 +57,9 @@ class FeedShareController < ApplicationController
 
     # Redirect to the view that shows a user all the feeds
     # shared with them
-    Rails.logger.info
+    Rails.logger.info(
       "User #{user.id} feed shared with #{current_user.id} successfully"
+      )
     flash[:notice] = "Shared feed access successful"
     redirect_to shared_user_feeds_path
   rescue => e
@@ -84,13 +90,15 @@ class FeedShareController < ApplicationController
   def shared_user_feed
     user = User.find(params[:user_id])
 
-    uvu = UserViewUser.find_by(viewer: current_user, viewee: user)
+    # Find an active user view user where the current user
+    # views another user.
+    uvu = UserViewUser.find_active(
+            viewer: current_user,
+            viewee: user
+            )
     if uvu.nil?
-      raise "User's feed hasn't been shared with you, can't access it"
-    end
-
-    if uvu.expired?
-      raise "User feed shared with you has expired"
+      raise "You cannot access that user's feed, either it was" \
+            "never shared or the share has expired !"
     end
 
     # Render the posts index page showing posts of the
@@ -107,6 +115,64 @@ class FeedShareController < ApplicationController
     render "posts/index"
   rescue => e
     msg = "Failure while displaying user feed: #{e.message}"
+    Rails.logger.error msg
+    flash[:error] = msg
+
+    redirect_to dashboard_path
+  end
+
+  # DELETE /stop_feed_share/:viewer_id/:viewee_id
+  #
+  # When current user calls this as the viewee, then
+  # the intent is to revoke access of the viewer to current
+  # user's shared feed.
+  #
+  # When current user calls this as a viewer, then the
+  # intent is to ignore shared feed of the viewee as the
+  # current user no longer wishes to view viewee's feed
+  # in the list of feeds shared with the current user.
+  def stop_feed_share
+    viewer = User.find(params[:viewer_id])
+    viewee = User.find(params[:viewee_id])
+
+    unless current_user == viewer ||
+           current_user == viewee
+      # Someone who is not a viewer nor a viewee cannot
+      # stop the feed sharing between viewer and viewee
+      raise "Current user neither viewer nor viewee in the feed share !"
+    end
+
+    uvu = UserViewUser.find_active(
+            viewer: viewer,
+            viewee: viewee
+            )
+    if uvu.nil?
+      raise "No active feed share occuring between the requested viewer and" \
+            "viewee !"
+    end
+
+    # Destroying the record so that our system no longer considers
+    # the feed share
+    uvu.destroy!
+
+    Rails.logger.info(
+      "Stopped feed share between viewer #{viewer.id} and viewee #{viewee.id}"
+      )
+    flash[:notice] = "Stopped feed share successfully !"
+
+    if current_user == viewer
+      # Direct the current user to the path where he can view what
+      # other user feeds can he still view after we've stopped sharing
+      # viewee's feed
+      redirect_to shared_user_feeds_path
+    else
+      # current user is the viewee, direct him to the page where
+      # he can view which other viewers can still access his feed
+      # after stopping feed share with the viewer.
+      redirect_to feed_share_manager_path
+    end
+  rescue => e
+    msg = "Failure while revoking shared feed access: #{e.message}"
     Rails.logger.error msg
     flash[:error] = msg
 

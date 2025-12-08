@@ -166,4 +166,47 @@ RSpec.describe UserViewUser, type: :model do
       end
     end
   end
+
+  describe ".find_active" do
+     let(:viewer_user) { test_user_1 }
+     let(:viewee_user) { test_user_2 }
+
+     context "user cannot view another user" do
+      it "should return false" do
+        expect(
+          UserViewUser.find_active(viewer: viewer_user, viewee: viewee_user)
+          ).to be_nil
+      end
+    end
+
+    context "user could view another before but the view has now expired" do
+      before do
+        UserViewUser.create!(
+                viewer: viewer_user,
+                viewee: viewee_user,
+                expires_at: Time.current - 5.minutes
+                )
+      end
+
+      it "should return false" do
+        expect(
+          UserViewUser.find_active(viewer: viewer_user, viewee: viewee_user)
+          ).to be_nil
+      end
+    end
+
+    context "user can view another user" do
+      it "should return true" do
+        uvu = UserViewUser.create!(
+                viewer: viewer_user,
+                viewee: viewee_user,
+                expires_at: Time.current + 5.minutes
+                )
+
+        expect(
+          UserViewUser.find_active(viewer: viewer_user, viewee: viewee_user)
+          ).to eq(uvu)
+      end
+    end
+  end
 end

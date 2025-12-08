@@ -96,7 +96,7 @@ RSpec.describe FeedShareController, type: :controller do
     it "rescues and redirects when the feed has not been shared with the viewer" do
       get :shared_user_feed, params: { user_id: other_user.id }
 
-      expect(flash[:error]).to include("User's feed hasn't been shared with you")
+      expect(flash[:error]).not_to be_nil
       expect(response).to redirect_to(dashboard_path)
     end
 
@@ -109,7 +109,7 @@ RSpec.describe FeedShareController, type: :controller do
 
       get :shared_user_feed, params: { user_id: other_user.id }
 
-      expect(flash[:error]).to include("User feed shared with you has expired")
+      expect(flash[:error]).not_to be_nil
       expect(response).to redirect_to(dashboard_path)
     end
 
@@ -147,6 +147,171 @@ RSpec.describe FeedShareController, type: :controller do
       get :shared_user_feeds
 
       expect(controller.instance_variable_get(:@current_user_view_users)).to eq([ active ])
+    end
+  end
+
+  # current user tries to revoke feed access of another user
+  # (so that the other user can no longer access current user's
+  # feed)
+  describe "#DELETE stop_feed_share" do
+    let(:test_end_point) { :stop_feed_share }
+    let(:test_user_1) { viewer }
+    let(:test_user_2) { other_user }
+    let(:test_user_3) {
+        User.create!(
+                email: "third_user_stop_share_feed@test.com",
+                first_name: "ThirdUser",
+                last_name: "StopShareFeed"
+                )
+    }
+
+    before do
+      # All the further tests for this method should set current_user
+      # and whatever they'll set it to would act as the logged in user.
+      session[:user_id] = current_user
+    end
+
+    # Happy path 1: User ignores shared feed of another user
+    context "current user can access viewee's feed" do
+      let(:current_user) { test_user_1 }
+      let(:viewer_user) { current_user }
+      let(:viewee_user) { test_user_2 }
+
+      before do
+        UserViewUser.create!(
+                viewer: viewer_user,
+                viewee: viewee_user,
+                expires_at: Time.current + 5.minutes
+                )
+      end
+
+      it "should actually stop feed share" do
+        expect {
+            delete test_end_point, params: {
+                             viewer_id: viewer_user.id,
+                             viewee_id: viewee_user.id
+                           }
+        }.to change(UserViewUser, :count).by(-1)
+
+         uvu = UserViewUser.find_by(viewer: viewer_user, viewee: viewee_user)
+         expect(uvu).to be_nil
+      end
+
+      it "should set flash notice and redirect to shared feeds page" do
+        delete test_end_point, params: {
+                             viewer_id: viewer_user.id,
+                             viewee_id: viewee_user.id
+                           }
+        expect(flash[:notice]).not_to be_nil
+        expect(response).to redirect_to(shared_user_feeds_path)
+      end
+    end
+
+    # Happy path 2: User revokes shared feed access of viewer
+    context "current user's feed can be access by viewer" do
+      let(:current_user) { test_user_1 }
+      let(:viewer_user) { test_user_2 }
+      let(:viewee_user) { current_user }
+
+      before do
+        UserViewUser.create!(
+                viewer: viewer_user,
+                viewee: viewee_user,
+                expires_at: Time.current + 5.minutes
+                )
+      end
+
+      it "should actually stop feed share" do
+        expect {
+            delete test_end_point, params: {
+                             viewer_id: viewer_user.id,
+                             viewee_id: viewee_user.id
+                           }
+        }.to change(UserViewUser, :count).by(-1)
+
+         uvu = UserViewUser.find_by(viewer: viewer_user, viewee: viewee_user)
+         expect(uvu).to be_nil
+      end
+
+      it "should set flash notice and redirect to feed manager page" do
+        delete test_end_point, params: {
+                             viewer_id: viewer_user.id,
+                             viewee_id: viewee_user.id
+                           }
+        expect(flash[:notice]).not_to be_nil
+        expect(response).to redirect_to(feed_share_manager_path)
+      end
+    end
+
+    context "current user neither viewer nor viewee" do
+      let(:viewer_user) { test_user_1 }
+      let(:viewee_user) { test_user_2 }
+      let(:current_user) { test_user_3 }
+
+      before do
+        # Have an active shared feed between viewer and viewee
+        UserViewUser.create!(
+                viewer: viewer_user,
+                viewee: viewee_user,
+                expires_at: Time.current + 5.minutes
+                )
+      end
+
+      it "should set flash error and redirect to dashboard" do
+        delete test_end_point, params: {
+                             viewer_id: viewer_user.id,
+                             viewee_id: viewee_user.id
+                           }
+        expect(flash[:error]).not_to be_nil
+        expect(response).to redirect_to(dashboard_path)
+      end
+    end
+
+    context "viewer and viewee have no shared feed between them" do
+      let(:current_user) { test_user_1 }
+      let(:viewer_user) { test_user_1 }
+      let(:viewee_user) { test_user_2 }
+
+      before do
+        # There exists none at this point, still destroying
+        # just for the sake of safe programming and explicitly
+        # specifying what the precondition is.
+        UserViewUser.where(
+                viewer: viewer_user,
+                viewee: viewee_user).destroy_all
+      end
+
+      it "should set flash error and redirect to dashboard" do
+        delete test_end_point, params: {
+                             viewer_id: viewer_user.id,
+                             viewee_id: viewee_user.id
+                           }
+        expect(flash[:error]).not_to be_nil
+        expect(response).to redirect_to(dashboard_path)
+      end
+    end
+
+    context "viewer and viewee had shared feed but it has expired" do
+      let(:current_user) { test_user_1 }
+      let(:viewer_user) { test_user_1 }
+      let(:viewee_user) { test_user_2 }
+
+      before do
+        UserViewUser.create!(
+                viewer: viewer_user,
+                viewee: viewee_user,
+                expires_at: Time.current - 5.minutes
+                )
+      end
+
+      it "should set flash error and redirect to dashboard" do
+        delete test_end_point, params: {
+                             viewer_id: viewer_user.id,
+                             viewee_id: viewee_user.id
+                           }
+        expect(flash[:error]).not_to be_nil
+        expect(response).to redirect_to(dashboard_path)
+      end
     end
   end
 end

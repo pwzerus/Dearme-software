@@ -28,11 +28,18 @@ class UserViewUser < ApplicationRecord
             )
   end
 
-  def self.can_user_view_another?(user, another_user)
-    uvu = find_by(viewer: user, viewee: another_user)
-    return false if uvu.nil?
+  # Find an active user view user record with the given
+  # viewer and viewee
+  def self.find_active(viewer:, viewee:)
+    uvu = self.find_by(viewer: viewer, viewee: viewee)
+    return nil if uvu.nil?
 
-    uvu.active?
+    uvu.active? ? uvu : nil
+  end
+
+  def self.can_user_view_another?(user, another_user)
+    uvu = self.find_active(viewer: user, viewee: another_user)
+    uvu.present?
   end
 
   private
