@@ -1,3 +1,5 @@
+require "stringio"
+
 class Post < ApplicationRecord
   belongs_to :creator, class_name: "User"
 
@@ -24,4 +26,48 @@ class Post < ApplicationRecord
 
   has_many :user_post_mentions, dependent: :destroy
   has_many :mentioned_users, through: :user_post_mentions, source: :user
+
+  # Create a copy of this post that belongs to the given user.
+  #
+  # Below are the things we copy as part of duplicate:
+  # - title, description, archived, location, tags, media_files
+  # and returns the new Post record.
+  # The new copies will be started as archived
+
+  def duplicate_for(user)
+    Post.transaction do
+      copy = dup
+
+      copy.creator = user
+      copy.title = build_duplicated_title
+
+      copy.save!
+
+      # Map tags for the new creator:
+      # - If copying your own post, this reuses the same tags
+      # - If copying another user's post, this creates/reuses tags with
+      #   same title for the new creator
+      copy.tags = tags.map do |tag|
+        Tag.find_or_create_by!(title: tag.title, creator: user)
+      end
+
+      # Copy media files and copy the underlying attachments
+      media_files.find_each do |media|
+        media.duplicate_for(copy)
+      end
+
+      copy
+    end
+  end
+
+  private
+
+  def build_duplicated_title
+    base = title.presence || "Post"
+    if base.start_with?("Copy of ")
+      base
+    else
+      "Copy of #{base}"
+    end
+  end
 end

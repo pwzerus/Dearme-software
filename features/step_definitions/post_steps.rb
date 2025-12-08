@@ -187,3 +187,39 @@ When('I attach the following media files to the post:') do |table|
   attach_file "added_files",
               filenames.map { |nm| get_test_file_path_from_name(nm) }
 end
+
+Then('a post should exist with:') do |table|
+  attrs = table.rows_hash
+
+  title         = attrs["title"]
+  creator_email = attrs["creator_email"]
+
+  post = Post.find_by(title: title)
+  expect(post).not_to be_nil
+
+  if creator_email.present?
+    expect(post.creator.email).to eq(creator_email)
+  end
+end
+
+Given('I have feed access to posts created by {string}') do |creator_email|
+  viewer = User.find_by!(email: TEST_USER_EMAIL)
+  creator = User.find_by!(email: creator_email)
+
+  UserViewUser.create!(
+    viewer: viewer,
+    viewee: creator,
+    expires_at: Time.current + 5.minutes
+  )
+end
+
+When('I attempt to copy a post that does not exist') do
+  # Use an obviously invalid id that set_post! will not find
+  page.driver.submit :post, duplicate_post_path(-1), {}
+end
+
+When('I attempt to copy the post titled {string} without permission') do |title|
+  post = Post.find_by!(title: title)
+  # Directly POST to the duplicate route, without going through show
+  page.driver.submit :post, duplicate_post_path(post), {}
+end

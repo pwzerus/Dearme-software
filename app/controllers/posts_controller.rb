@@ -2,7 +2,7 @@ class PostsController < ApplicationController
   include PostFilteringControllerConcern
 
   # Set @post based on params[:id]
-  before_action :set_post!, only: [ :show, :edit, :update, :destroy ]
+  before_action :set_post!, only: [ :show, :edit, :update, :destroy, :duplicate ]
 
   # Validate that the editor of the post is the
   # creator and no one else
@@ -29,10 +29,7 @@ class PostsController < ApplicationController
   end
 
   def show
-    unless @post.creator == current_user ||
-           @post.mentioned_users.include?(current_user) ||
-           UserViewUser.can_user_view_another?(current_user,
-                                               @post.creator)
+    unless can_current_user_view_post?(@post)
       raise "You do not have access to view the post"
     end
   rescue => e
@@ -121,7 +118,43 @@ class PostsController < ApplicationController
     render "posts/index"
   end
 
+    # POST /posts/:id/duplicate to duplicate a post
+    #
+    # Creates a copy of the given post for the current_user.
+    # - If current_user is the creator,
+    #   "create a copy of my created post".
+    # - If current_user is only a viewer,
+    #   "create a copy of some other user's post".
+    def duplicate
+      unless can_current_user_view_post?(@post)
+        Rails.logger.info "Failed to duplicate post: user #{current_user.id} not allowed to view post #{@post.id}"
+        flash[:alert] = "You do not have access to copy this post"
+        redirect_to dashboard_path
+        return
+      end
+
+      copied_post = @post.duplicate_for(current_user)
+
+      if current_user == @post.creator
+        flash[:notice] = "Post duplicated successfully."
+      else
+        flash[:notice] = "Post copied to your posts."
+      end
+
+      redirect_to edit_post_path(copied_post)
+    rescue => e
+      Rails.logger.error "Failed to duplicate post #{@post.id}: #{e.message}"
+      flash[:alert] = "Failed to copy post."
+      redirect_to post_path(@post)
+    end
+
   private
+    def can_current_user_view_post?(post)
+      post.creator == current_user ||
+      post.mentioned_users.include?(current_user) ||
+      UserViewUser.can_user_view_another?(current_user, post.creator)
+    end
+
     # Get the error string explaining why a post related
     # activity failed on the p object
     def post_error_str(p)
