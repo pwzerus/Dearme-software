@@ -1,5 +1,10 @@
 <h2>Post Details</h2>
 
+<%= button_to (@post.creator == current_user ? "Duplicate" : "Copy to my posts"),
+                duplicate_post_path(@post),
+                method: :post,
+                class: "btn btn-primary" %>
+
 <% if current_user == @post.creator %>
   <%= button_to "Edit",
                 edit_post_path(@post),
@@ -14,10 +19,6 @@
                     turbo_confirm: "Sure you want to delete ?"
                   }
                 } %>
-  <%= button_to (@post.creator == current_user ? "Duplicate" : "Copy to my posts"),
-                duplicate_post_path(@post),
-                method: :post,
-                class: "btn btn-primary" %>
   <% if @post.archived %>
     <!-- allow the user to post the post -->
     <%= form_with model: @post, local: true do |f| %>
@@ -31,12 +32,6 @@
       <%= f.submit "Archive", class: "btn btn-primary" %>
     <% end %>
   <% end %>
-
-<% else %>
-  <%= button_to "Copy to my posts",
-                duplicate_post_path(@post),
-                method: :post,
-                class: "btn btn-primary" %>
 <% end %>
 
 <p>Created by: <%= @post.creator.email %></p>
