@@ -420,6 +420,149 @@ Common things to check:
 
 * * * * *
 
+Production Token Encryption Key (for Sharing)
+============================================
+
+In production, the application uses a symmetric encryption key to encode and decode sharing tokens. 
+This key must be generated locally and stored in the TOKEN_ENCRYPTOR_STRICT_BASE64_ENCODED_KEY environment variable on Heroku.
+
+Follow these steps to generate it:
+
+1. Open a Rails console:
+
+    bin/rails console
+
+2. Get the required key length:
+
+    len = ActiveSupport::MessageEncryptor.key_len
+
+3. Generate a random salt:
+
+    salt = SecureRandom.random_bytes(len)
+
+4. Load your Google client secret (must already be in your environment):
+
+    secret = ENV["GOOGLE_CLIENT_SECRET"]
+
+5. Generate the binary encryption key:
+
+    key = ActiveSupport::KeyGenerator.new(secret).generate_key(salt, len)
+
+6. Base64-encode the key so it is safe to store:
+
+    encoded = Base64.strict_encode64(key)
+
+7. Copy the encoded string and add it to your Heroku Config Vars:
+
+    TOKEN_ENCRYPTOR_STRICT_BASE64_ENCODED_KEY = <value from step 6>
+
+8. Optional: Verify the encoded key decodes correctly:
+
+    decoded = Base64.strict_decode64(encoded)
+    key == decoded   # should return true
+
+
+Deploying the Application to Heroku
+===================================
+
+These steps assume you have a working local environment and can run the application locally.
+
+1. Create the Heroku App and Heroku Postgres database:
+
+   - Go to the Heroku Dashboard.
+   - Create a new app.
+   - Open the Resources tab.
+   - Add the Heroku Postgres add-on using the Essential-0 plan or higher.
+
+2. Add the required configuration variables in Heroku → Settings → Config Vars:
+
+   GOOGLE_CLIENT_ID
+   GOOGLE_CLIENT_SECRET
+   TOKEN_ENCRYPTOR_STRICT_BASE64_ENCODED_KEY
+   AWS_ACCESS_KEY_ID
+   AWS_SECRET_ACCESS_KEY
+
+3. Log in to Heroku from your local machine:
+
+    heroku login
+
+4. Set the Heroku git remote (from inside your project folder):
+
+    heroku git:remote -a your-heroku-app-name
+
+5. Ensure the project contains a Procfile in the top-level directory with the following:
+
+    release: bundle exec rails db:migrate && bundle exec rails db:seed
+    web: bundle exec rails server -p $PORT
+
+   Note: The release command should only run idempotent seeds.
+
+6. Deploy the application:
+
+    git push heroku main
+
+   Heroku will build the application, run any release-phase commands, and start the web dyno.
+
+7. Verify the deployment:
+
+   - Open the deployed app URL in your browser.
+   - Log in with a Google account that has been added as a test user in the Google Cloud OAuth settings.
+   - Ensure you can reach the dashboard and use the application normally.
+
+
+Configuring AWS S3 for Production File Storage
+==============================================
+
+1. Create an S3 bucket:
+
+   - Open the AWS console and search for “S3”.
+   - Create a new bucket.
+   - Choose a unique bucket name such as “dearme-production-uploads”.
+   - Select a region (example: us-east-1).
+   - Leave the remaining settings as defaults for a private bucket.
+
+2. Create an IAM user with S3 permissions:
+
+   - Open the IAM service in AWS.
+   - Create a new user (example: dearme-s3-user).
+   - Attach the policy AmazonS3FullAccess or a more restrictive bucket-specific policy.
+   - After creation, open the user, go to Security Credentials, and generate an access key.
+   - Save the Access Key ID and Secret Access Key.
+
+3. Add these credentials to the Heroku Config Vars:
+
+   AWS_ACCESS_KEY_ID
+   AWS_SECRET_ACCESS_KEY
+
+4. Configure Rails to use S3 in production:
+
+   In config/environments/production.rb:
+
+       config.active_storage.service = :amazon
+
+   In config/storage.yml ensure the amazon service looks like this:
+
+       amazon:
+         service: S3
+         access_key_id: <%= ENV["AWS_ACCESS_KEY_ID"] %>
+         secret_access_key: <%= ENV["AWS_SECRET_ACCESS_KEY"] %>
+         region: your-region-here
+         bucket: your-bucket-name-here
+
+5. Deploy updated configuration:
+
+    git push heroku main
+
+6. Verify uploads:
+
+   - Log in to the production application.
+   - Upload an image or video.
+   - Confirm that the upload succeeds and appears in your AWS S3 bucket.
+
+
+This completes the production deployment steps: generating the encryption key, deploying to Heroku, configuring AWS S3, and verifying the application in a production environment.
+* * * * *
+
 📝 Notes
 --------
 
