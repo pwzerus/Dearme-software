@@ -1,6 +1,6 @@
 # README
 
-Project 3 Group 4 - DearMe
+DearMe
 ===============================================
 
 This application is designed for sharing personal photos and videos privately, helping you create and preserve memories without any social media pressure, likes, comments, or public interactions.
